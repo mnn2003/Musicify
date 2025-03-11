@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Heart, MoreHorizontal, Clock, Plus, Check } from 'lucide-react';
+import { Play, Heart, MoreHorizontal, Plus, Check } from 'lucide-react';
 import { Track } from '../types';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
@@ -11,7 +11,6 @@ interface TrackListProps {
   showHeader?: boolean;
   showArtist?: boolean;
   showAlbum?: boolean;
-  showDuration?: boolean;
   onTrackClick?: (track: Track) => void;
 }
 
@@ -20,7 +19,6 @@ const TrackList: React.FC<TrackListProps> = ({
   showHeader = true,
   showArtist = true,
   showAlbum = false,
-  showDuration = true,
   onTrackClick
 }) => {
   const { setCurrentTrack, currentTrack, isPlaying, togglePlay, addToQueue } = usePlayerStore();
@@ -30,12 +28,6 @@ const TrackList: React.FC<TrackListProps> = ({
   
   const [showPlaylistMenu, setShowPlaylistMenu] = useState<string | null>(null);
   const [addingToPlaylist, setAddingToPlaylist] = useState<string | null>(null);
-
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
 
   const handleTrackClick = (track: Track) => {
     if (onTrackClick) {
@@ -104,11 +96,6 @@ const TrackList: React.FC<TrackListProps> = ({
           <div className="col-span-5 md:col-span-5">TITLE</div>
           {showArtist && <div className="hidden md:block md:col-span-3">ARTIST</div>}
           {showAlbum && <div className="hidden md:block md:col-span-2">ALBUM</div>}
-          {showDuration && (
-            <div className="col-span-1 flex justify-end">
-              <Clock size={16} />
-            </div>
-          )}
           <div className="col-span-1"></div>
         </div>
       )}
@@ -162,12 +149,6 @@ const TrackList: React.FC<TrackListProps> = ({
             {showAlbum && (
               <div className="hidden md:flex md:col-span-2 items-center text-gray-400 truncate">
                 {/* Album would go here */}
-              </div>
-            )}
-
-            {showDuration && (
-              <div className="col-span-1 flex items-center justify-end text-gray-400">
-                {formatDuration(track.duration)}
               </div>
             )}
 
