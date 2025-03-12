@@ -69,7 +69,9 @@ const TrackList: React.FC<TrackListProps> = ({
     }
   };
 
-  const handleLikeClick = (track: Track) => {
+  const handleLikeClick = (track: Track, e: React.MouseEvent) => {
+    e.stopPropagation(); // Stop event propagation
+
     if (!isAuthenticated) {
       if (window.confirm('You need to be logged in to like songs. Would you like to log in now?')) {
         navigate('/login');
@@ -80,7 +82,9 @@ const TrackList: React.FC<TrackListProps> = ({
     toggleLike(track);
   };
 
-  const handleAddToPlaylist = async (track: Track, playlistId: string) => {
+  const handleAddToPlaylist = async (track: Track, playlistId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Stop event propagation
+
     if (!isAuthenticated) {
       if (window.confirm('You need to be logged in to add songs to playlists. Would you like to log in now?')) {
         navigate('/login');
@@ -95,7 +99,6 @@ const TrackList: React.FC<TrackListProps> = ({
       console.error('Error adding to playlist:', error);
     } finally {
       setAddingToPlaylist(null);
-      setShowPlaylistMenu(null);
     }
   };
 
@@ -183,7 +186,7 @@ const TrackList: React.FC<TrackListProps> = ({
                 <button 
                   className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-gray-400 hover:text-white"
                   onClick={(e) => {
-                    e.stopPropagation();
+                    e.stopPropagation(); // Stop event propagation
                     setShowPlaylistMenu(showPlaylistMenu === track.id ? null : track.id);
                   }}
                 >
@@ -193,14 +196,14 @@ const TrackList: React.FC<TrackListProps> = ({
                 {showPlaylistMenu === track.id && (
                   <div 
                     className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg overflow-hidden"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()} // Prevent clicks inside the menu from closing it
                   >
                     <div className="py-1">
                       <button
                         className={`w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between ${
                           isTrackLiked(track) ? 'text-green-500' : ''
                         }`}
-                        onClick={() => handleLikeClick(track)}
+                        onClick={(e) => handleLikeClick(track, e)} // Pass event to stop propagation
                       >
                         <span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
                         <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
@@ -211,7 +214,7 @@ const TrackList: React.FC<TrackListProps> = ({
                           <button
                             key={playlist.id}
                             className="w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between"
-                            onClick={() => handleAddToPlaylist(track, playlist.id)}
+                            onClick={(e) => handleAddToPlaylist(track, playlist.id, e)} // Pass event to stop propagation
                             disabled={addingToPlaylist === playlist.id}
                           >
                             <span className="truncate">{playlist.name}</span>
