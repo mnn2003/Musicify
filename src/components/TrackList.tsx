@@ -197,7 +197,9 @@ const TrackList: React.FC<TrackListProps> = ({
                   >
                     <div className="py-1">
                       <button
-                        className="w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between"
+                        className={`w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between ${
+                          isTrackLiked(track) ? 'text-green-500' : ''
+                        }`}
                         onClick={() => handleLikeClick(track)}
                       >
                         <span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
