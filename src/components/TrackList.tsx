@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Play, Heart, MoreHorizontal, Plus, Check } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Heart, MoreHorizontal, Plus, Check, Clock } from 'lucide-react';
 import { Track } from '../types';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
@@ -28,6 +28,27 @@ const TrackList: React.FC<TrackListProps> = ({
   
   const [showPlaylistMenu, setShowPlaylistMenu] = useState<string | null>(null);
   const [addingToPlaylist, setAddingToPlaylist] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close the menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowPlaylistMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
 
   const handleTrackClick = (track: Track) => {
     if (onTrackClick) {
@@ -48,9 +69,7 @@ const TrackList: React.FC<TrackListProps> = ({
     }
   };
 
-  const handleLikeClick = (track: Track, e: React.MouseEvent) => {
-    e.stopPropagation();
-    
+  const handleLikeClick = (track: Track) => {
     if (!isAuthenticated) {
       if (window.confirm('You need to be logged in to like songs. Would you like to log in now?')) {
         navigate('/login');
@@ -96,6 +115,9 @@ const TrackList: React.FC<TrackListProps> = ({
           <div className="col-span-5 md:col-span-5">TITLE</div>
           {showArtist && <div className="hidden md:block md:col-span-3">ARTIST</div>}
           {showAlbum && <div className="hidden md:block md:col-span-2">ALBUM</div>}
+          <div className="col-span-1 flex justify-end">
+            <Clock size={16} />
+          </div>
           <div className="col-span-1"></div>
         </div>
       )}
@@ -152,17 +174,12 @@ const TrackList: React.FC<TrackListProps> = ({
               </div>
             )}
 
+            <div className="col-span-1 flex items-center justify-end text-gray-400">
+              {formatDuration(track.duration)}
+            </div>
+
             <div className="col-span-1 flex items-center justify-end space-x-2 relative">
-              <button
-                className={`opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity ${
-                  isTrackLiked(track) ? 'text-green-500' : 'text-gray-400 hover:text-white'
-                }`}
-                onClick={(e) => handleLikeClick(track, e)}
-              >
-                <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
-              </button>
-              
-              <div className="relative">
+              <div className="relative" ref={menuRef}>
                 <button 
                   className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-gray-400 hover:text-white"
                   onClick={(e) => {
@@ -179,6 +196,13 @@ const TrackList: React.FC<TrackListProps> = ({
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="py-1">
+                      <button
+                        className="w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between"
+                        onClick={() => handleLikeClick(track)}
+                      >
+                        <span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
+                        <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
+                      </button>
                       <div className="px-4 py-2 text-sm text-gray-400">Add to playlist</div>
                       {playlists.length > 0 ? (
                         playlists.map(playlist => (
