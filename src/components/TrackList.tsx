@@ -69,18 +69,25 @@ const TrackList: React.FC<TrackListProps> = ({
     }
   };
 
-  const handleLikeClick = (track: Track, e: React.MouseEvent) => {
-    e.stopPropagation(); // Stop event propagation
+  const handleAddToPlaylist = async (track: Track, playlistId: string, e: React.MouseEvent) => {
+	  e.stopPropagation(); // Prevent menu from closing
 
-    if (!isAuthenticated) {
-      if (window.confirm('You need to be logged in to like songs. Would you like to log in now?')) {
-        navigate('/login');
-      }
-      return;
-    }
-    
-    toggleLike(track);
-  };
+	  if (!isAuthenticated) {
+		if (window.confirm('You need to be logged in to add songs to playlists. Would you like to log in now?')) {
+		  navigate('/login');
+		}
+		return;
+	  }
+
+	  setAddingToPlaylist(playlistId);
+	  try {
+		await addToPlaylist(playlistId, track);
+	  } catch (error) {
+		console.error('Error adding to playlist:', error);
+	  } finally {
+		setAddingToPlaylist(null);
+	  }
+	};
 
   const handleAddToPlaylist = async (track: Track, playlistId: string, e: React.MouseEvent) => {
     e.stopPropagation(); // Stop event propagation
