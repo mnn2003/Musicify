@@ -31,24 +31,42 @@ const TrackList: React.FC<TrackListProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close the menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowPlaylistMenu(null);
-      }
-    };
+	 useEffect(() => {
+	  const handleClickOutside = (event: MouseEvent) => {
+		if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+		  setTimeout(() => setShowPlaylistMenu(null), 100); // Small delay
+		}
+	  };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+	  document.addEventListener('mousedown', handleClickOutside);
+	  return () => {
+		document.removeEventListener('mousedown', handleClickOutside);
+	  };
+	}, []);
 
   const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
+		const mins = Math.floor(seconds / 60);
+		const secs = Math.floor(seconds % 60);
+		return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+	  };
+	  const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+	const handleClickOutside = (event: MouseEvent) => {
+	  if (
+		showPlaylistMenu &&
+		menuRefs.current[showPlaylistMenu] &&
+		!menuRefs.current[showPlaylistMenu]?.contains(event.target as Node)
+	  ) {
+		setShowPlaylistMenu(null);
+	  }
+	};
+
+	useEffect(() => {
+	  document.addEventListener('mousedown', handleClickOutside);
+	  return () => {
+		document.removeEventListener('mousedown', handleClickOutside);
+	  };
+	}, [showPlaylistMenu]);
 
   const handleTrackClick = (track: Track) => {
     if (onTrackClick) {
@@ -183,61 +201,63 @@ const TrackList: React.FC<TrackListProps> = ({
             </div>
 
             <div className="col-span-1 flex items-center justify-end space-x-2 relative">
-              <div className="relative" ref={menuRef}>
-                <button 
-                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-gray-400 hover:text-white"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Stop event propagation
-                    setShowPlaylistMenu(showPlaylistMenu === track.id ? null : track.id);
-                  }}
-                >
-                  <MoreHorizontal size={16} />
-                </button>
+			  <div className="relative">
+				<button 
+				  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-gray-400 hover:text-white"
+				  onClick={(e) => {
+					e.stopPropagation(); // Stop event propagation
+					setShowPlaylistMenu(showPlaylistMenu === track.id ? null : track.id);
+				  }}
+				>
+				  <MoreHorizontal size={16} />
+				</button>
 
-                {showPlaylistMenu === track.id && (
-                  <div 
-                    className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg overflow-hidden"
-                    onClick={(e) => e.stopPropagation()} // Prevent clicks inside the menu from closing it
-                  >
-                    <div className="py-1">
-                      <button
-                        className={`w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between ${
-                          isTrackLiked(track) ? 'text-green-500' : ''
-                        }`}
-                        onClick={(e) => handleLikeClick(track, e)} // Pass event to stop propagation
-                      >
-                        <span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
-                        <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
-                      </button>
-                      <div className="px-4 py-2 text-sm text-gray-400">Add to playlist</div>
-                      {playlists.length > 0 ? (
-                        playlists.map(playlist => (
-                          <button
-                            key={playlist.id}
-                            className="w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between"
-                            onClick={(e) => handleAddToPlaylist(track, playlist.id, e)} // Pass event to stop propagation
-                            disabled={addingToPlaylist === playlist.id}
-                          >
-                            <span className="truncate">{playlist.name}</span>
-                            {addingToPlaylist === playlist.id ? (
-                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent" />
-                            ) : playlist.tracks.some(t => t.id === track.id) ? (
-                              <Check size={16} className="text-green-500" />
-                            ) : (
-                              <Plus size={16} />
-                            )}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="px-4 py-2 text-sm text-gray-400">
-                          No playlists available
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+				{showPlaylistMenu === track.id && (
+				  <div 
+					ref={(el) => (menuRefs.current[track.id] = el)} // Attach dynamic ref
+					className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg overflow-hidden"
+					onMouseDown={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+				  >
+					<div className="py-1">
+					  <button
+						className={`w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between ${
+						  isTrackLiked(track) ? 'text-green-500' : ''
+						}`}
+						onClick={(e) => handleLikeClick(track, e)} 
+					  >
+						<span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
+						<Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
+					  </button>
+
+					  <div className="px-4 py-2 text-sm text-gray-400">Add to playlist</div>
+					  {playlists.length > 0 ? (
+						playlists.map(playlist => (
+						  <button
+							key={playlist.id}
+							className="w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between"
+							onClick={(e) => handleAddToPlaylist(track, playlist.id, e)}
+							disabled={addingToPlaylist === playlist.id}
+						  >
+							<span className="truncate">{playlist.name}</span>
+							{addingToPlaylist === playlist.id ? (
+							  <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent" />
+							) : playlist.tracks.some(t => t.id === track.id) ? (
+							  <Check size={16} className="text-green-500" />
+							) : (
+							  <Plus size={16} />
+							)}
+						  </button>
+						))
+					  ) : (
+						<div className="px-4 py-2 text-sm text-gray-400">
+						  No playlists available
+						</div>
+					  )}
+					</div>
+				  </div>
+				)}
+			  </div>
+			</div>
           </div>
         ))}
       </div>
