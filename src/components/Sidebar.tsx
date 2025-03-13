@@ -47,7 +47,7 @@ const Sidebar: React.FC = () => {
     <>
       {/* Mobile Menu Button */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-black rounded-full shadow-lg"
+        className="md:hidden fixed top-4 right-4 z-50 p-2 bg-black rounded-full shadow-lg"
         onClick={toggleSidebar}
       >
         {isOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
@@ -67,6 +67,14 @@ const Sidebar: React.FC = () => {
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-6">
+          {/* Close Button for Mobile */}
+          <button
+            className="md:hidden absolute top-4 right-4 p-2"
+            onClick={toggleSidebar}
+          >
+            <X size={24} className="text-white" />
+          </button>
+
           <div className="flex items-center gap-2 mb-8">
             <Music2 size={32} className="text-green-500" />
             <span className="text-xl font-bold">Musicify</span>
