@@ -56,6 +56,21 @@ const HomePage: React.FC = () => {
         <p className="text-gray-400">Discover new music and enjoy your favorites</p>
       </div>
 
+      <section>
+        <h2 className="text-2xl font-bold text-white mb-4">Popular Right Now</h2>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-40">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {popularTracks.map(track => (
+              <TrackCard key={track.id} track={track} />
+            ))}
+          </div>
+        )}
+      </section>
+
      {localMusic.length > 0 && (
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-4">Local Music</h2>
@@ -87,21 +102,7 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       </section>
-
-      <section>
-        <h2 className="text-2xl font-bold text-white mb-4">Popular Right Now</h2>
-        {isLoading ? (
-          <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {popularTracks.map(track => (
-              <TrackCard key={track.id} track={track} />
-            ))}
-          </div>
-        )}
-      </section>
+      
     </div>
   );
 };
