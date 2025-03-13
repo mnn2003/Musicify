@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
-import { Menu, X } from 'lucide-react'; // Icons for the mobile header
+import { Menu, X, Music2} from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 const MainLayout: React.FC = () => {
