@@ -19,15 +19,15 @@ const MainLayout: React.FC = () => {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto pb-24 md:pb-0 md:pl-64 transition-all duration-300">
+      <main className="flex-1 overflow-y-auto pb-24 md:pb-0 md: transition-all duration-300">
         {/* Mobile Header */}
         <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-sm p-4 flex items-center justify-between border-b border-gray-800">
           {/* App Logo */}
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="App Logo" className="w-8 h-8" />
+            <Music2 size={32} className="text-green-500" />
             <span className="text-xl font-bold">Musicify</span>
           </div>
-
+          
           {/* Menu and User Profile Icons */}
           <div className="flex items-center gap-4">
             {/* Menu Icon */}
