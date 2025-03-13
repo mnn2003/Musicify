@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { getPopularMusicVideos, getVideosByCategory, getVideoDetails } from '../api/youtube';
-import { SearchResult, Track } from '../types';
+import { getPopularMusicVideos, getVideoDetails } from '../api/youtube';
+import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
 import CategoryCard from '../components/CategoryCard';
 import { useAuthStore } from '../store/authStore';
 import { localTracks, convertToTrack } from '../lib/localMusic';
-import TrackList from '../components/TrackList';
+import SkeletonLoader from '../components/SkeletonLoader'; // Reusable skeleton loader component
 
 const HomePage: React.FC = () => {
   const [popularTracks, setPopularTracks] = useState<Track[]>([]);
@@ -48,19 +48,25 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
+      {/* Greeting Section */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
           Good {getTimeOfDay()}, {user?.name || 'Guest'}
         </h1>
-        <p className="text-gray-400">Discover new music and enjoy your favorites</p>
+        <p className="text-gray-400 text-sm sm:text-base">
+          Discover new music and enjoy your favorites
+        </p>
       </div>
 
-      <section>
-        <h2 className="text-2xl font-bold text-white mb-8">Popular Right Now</h2>
+      {/* Popular Tracks Section */}
+      <section className="mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Right Now</h2>
         {isLoading ? (
-          <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -71,12 +77,15 @@ const HomePage: React.FC = () => {
         )}
       </section>
 
-     {localMusic.length > 0 && (
+      {/* Local Music Section */}
+      {localMusic.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">Local Music</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Local Music</h2>
           {isLoading ? (
-            <div className="flex justify-center items-center h-40">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <SkeletonLoader key={index} />
+              ))}
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -87,9 +96,10 @@ const HomePage: React.FC = () => {
           )}
         </section>
       )}
-      
+
+      {/* Categories Section */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold text-white mb-4">Browse Categories</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Browse Categories</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {categories.map(category => (
             <CategoryCard
@@ -102,7 +112,6 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       </section>
-      
     </div>
   );
 };
