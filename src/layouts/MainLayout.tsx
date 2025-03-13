@@ -30,11 +30,7 @@ const MainLayout: React.FC = () => {
           
           {/* Menu and User Profile Icons */}
           <div className="flex items-center gap-4">
-            {/* Menu Icon */}
-            <button onClick={toggleSidebar} className="p-2">
-              {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-
+           
             {/* User Profile Icon */}
             {isAuthenticated && user && (
               <div className="flex items-center gap-2">
@@ -51,6 +47,12 @@ const MainLayout: React.FC = () => {
                 )}
               </div>
             )}
+            
+             {/* Menu Icon */}
+            <button onClick={toggleSidebar} className="p-2">
+              {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+            
           </div>
         </div>
 
