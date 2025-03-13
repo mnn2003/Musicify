@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -271,7 +270,6 @@ const Player: React.FC = () => {
     setIsMuted(!isMuted)
   }
 
-  // Handle like button click with auth check
   const handleLikeClick = () => {
     if (!isAuthenticated) {
       if (window.confirm("You need to be logged in to like songs. Would you like to log in now?")) {
