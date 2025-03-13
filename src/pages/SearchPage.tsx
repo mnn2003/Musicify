@@ -37,24 +37,34 @@ const SearchPage: React.FC = () => {
   }, [query]);
   
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="mb-8">
         <div className="mb-6">
           <SearchBar />
         </div>
         
-        <h1 className="text-3xl font-bold text-white mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
           {query ? `Search results for "${query}"` : 'Search for music'}
         </h1>
       </div>
       
       {isLoading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <div className="space-y-4">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div key={index} className="animate-pulse flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gray-700 rounded"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-700 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : error ? (
         <div className="bg-red-900/20 border border-red-900 text-red-200 p-4 rounded-md">
-          {error}
+          <p className="font-semibold">Error</p>
+          <p>{error}</p>
+          <p className="mt-2 text-sm">Please check your connection and try again.</p>
         </div>
       ) : results.length > 0 ? (
         <div className="bg-gray-900/50 rounded-lg overflow-hidden">
