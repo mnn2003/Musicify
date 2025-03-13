@@ -12,12 +12,10 @@ const SearchBar: React.FC = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Handle search input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
 
-  // Handle search submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -26,13 +24,11 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  // Clear search input
   const clearSearch = () => {
     setQuery('');
     setResults([]);
   };
 
-  // Handle click outside to close results
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -46,7 +42,6 @@ const SearchBar: React.FC = () => {
     };
   }, []);
 
-  // Fetch search suggestions
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (query.trim().length < 2) {
@@ -70,7 +65,7 @@ const SearchBar: React.FC = () => {
   }, [query]);
 
   return (
-    <div ref={searchRef} className="relative w-full max-w-md">
+    <div ref={searchRef} className="relative w-full max-w-md mx-auto">
       <form onSubmit={handleSubmit} className="relative">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -81,14 +76,16 @@ const SearchBar: React.FC = () => {
             value={query}
             onChange={handleChange}
             onFocus={() => setShowResults(true)}
-            className="block w-full pl-10 pr-10 py-2 bg-gray-800 border border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="block w-full pl-10 pr-10 py-2 bg-gray-800 border border-gray-700 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-200"
             placeholder="Search for songs, artists..."
+            aria-label="Search for songs, artists"
           />
           {query && (
             <button
               type="button"
               onClick={clearSearch}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white transition-colors duration-200"
+              aria-label="Clear search"
             >
               <X size={18} />
             </button>
@@ -97,7 +94,7 @@ const SearchBar: React.FC = () => {
       </form>
 
       {showResults && query.trim().length > 0 && (
-        <div className="absolute z-10 mt-1 w-full bg-gray-800 rounded-md shadow-lg overflow-hidden">
+        <div className="absolute z-10 mt-1 w-full bg-gray-800 rounded-md shadow-lg overflow-hidden transition-opacity duration-200">
           {isLoading ? (
             <div className="p-4 text-center text-gray-400">Loading...</div>
           ) : results.length > 0 ? (
@@ -106,7 +103,7 @@ const SearchBar: React.FC = () => {
                 <li key={result.id}>
                   <a
                     href={`/search?q=${encodeURIComponent(result.title)}`}
-                    className="block px-4 py-2 hover:bg-gray-700 flex items-center"
+                    className="block px-4 py-2 hover:bg-gray-700 flex items-center transition-colors duration-200"
                     onClick={(e) => {
                       e.preventDefault();
                       setQuery(result.title);
@@ -117,7 +114,7 @@ const SearchBar: React.FC = () => {
                     <img
                       src={result.thumbnail}
                       alt={result.title}
-                      className="w-10 h-10 object-cover mr-3"
+                      className="w-10 h-10 object-cover mr-3 rounded"
                     />
                     <div>
                       <div className="text-white text-sm truncate">{result.title}</div>
@@ -129,7 +126,7 @@ const SearchBar: React.FC = () => {
               <li>
                 <a
                   href={`/search?q=${encodeURIComponent(query)}`}
-                  className="block px-4 py-2 text-green-500 hover:bg-gray-700 text-center"
+                  className="block px-4 py-2 text-green-500 hover:bg-gray-700 text-center transition-colors duration-200"
                   onClick={(e) => {
                     e.preventDefault();
                     navigate(`/search?q=${encodeURIComponent(query)}`);
