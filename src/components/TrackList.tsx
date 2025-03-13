@@ -30,7 +30,6 @@ const TrackList: React.FC<TrackListProps> = ({
   const [addingToPlaylist, setAddingToPlaylist] = useState<string | null>(null);
   const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-  // Close the menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -62,11 +61,8 @@ const TrackList: React.FC<TrackListProps> = ({
         togglePlay();
       } else {
         setCurrentTrack(track);
-        // Add the clicked track and all subsequent tracks to the queue
         const trackIndex = tracks.findIndex((t) => t.id === track.id);
         const remainingTracks = tracks.slice(trackIndex);
-
-        // Clear queue and add all tracks
         usePlayerStore.getState().clearQueue();
         remainingTracks.forEach((t) => addToQueue(t));
       }
@@ -75,20 +71,17 @@ const TrackList: React.FC<TrackListProps> = ({
 
   const handleLikeClick = (track: Track, e: React.MouseEvent) => {
     e.stopPropagation();
-
     if (!isAuthenticated) {
       if (window.confirm('You need to be logged in to like songs. Would you like to log in now?')) {
         navigate('/login');
       }
       return;
     }
-
     toggleLike(track);
   };
 
   const handleAddToPlaylist = async (track: Track, playlistId: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent menu from closing
-
+    e.stopPropagation();
     if (!isAuthenticated) {
       if (window.confirm('You need to be logged in to add songs to playlists. Would you like to log in now?')) {
         navigate('/login');
@@ -106,17 +99,10 @@ const TrackList: React.FC<TrackListProps> = ({
     }
   };
 
-  const isTrackPlaying = (track: Track) => {
-    return currentTrack?.id === track.id && isPlaying;
-  };
-
-  const isTrackLiked = (track: Track) => {
-    return likedSongs.some((t) => t.id === track.id);
-  };
-
-  const isTrackInPlaylist = (track: Track, playlistId: string) => {
-    return playlists.find((playlist) => playlist.id === playlistId)?.tracks.some((t) => t.id === track.id);
-  };
+  const isTrackPlaying = (track: Track) => currentTrack?.id === track.id && isPlaying;
+  const isTrackLiked = (track: Track) => likedSongs.some((t) => t.id === track.id);
+  const isTrackInPlaylist = (track: Track, playlistId: string) =>
+    playlists.find((playlist) => playlist.id === playlistId)?.tracks.some((t) => t.id === track.id);
 
   return (
     <div className="w-full">
@@ -143,26 +129,12 @@ const TrackList: React.FC<TrackListProps> = ({
             <div className="col-span-1 flex items-center justify-center">
               <div className="group-hover:hidden">{index + 1}</div>
               <button className="hidden group-hover:block text-white">
-                {isTrackPlaying(track) ? (
-                  <div className="w-4 h-4 relative">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-1 h-3 bg-green-500 mx-px animate-sound-wave"></div>
-                      <div className="w-1 h-2 bg-green-500 mx-px animate-sound-wave animation-delay-200"></div>
-                      <div className="w-1 h-4 bg-green-500 mx-px animate-sound-wave animation-delay-400"></div>
-                    </div>
-                  </div>
-                ) : (
-                  <Play size={16} fill="currentColor" />
-                )}
+                {isTrackPlaying(track) ? <div className="animate-pulse">■</div> : <Play size={16} fill="currentColor" />}
               </button>
             </div>
 
             <div className="col-span-5 md:col-span-5 flex items-center min-w-0">
-              <img
-                src={track.thumbnail}
-                alt={track.title}
-                className="w-10 h-10 object-cover mr-3 flex-shrink-0"
-              />
+              <img src={track.thumbnail} alt={track.title} className="w-10 h-10 object-cover mr-3 flex-shrink-0" />
               <div className="truncate">
                 <div className={`truncate font-medium ${isTrackPlaying(track) ? 'text-green-500' : 'text-white'}`}>
                   {track.title}
@@ -171,87 +143,38 @@ const TrackList: React.FC<TrackListProps> = ({
               </div>
             </div>
 
-            {showArtist && (
-              <div className="hidden md:flex md:col-span-3 items-center text-gray-400 truncate">
-                {track.artist}
-              </div>
-            )}
+            {showArtist && <div className="hidden md:flex md:col-span-3 items-center text-gray-400 truncate">{track.artist}</div>}
 
-            {showAlbum && (
-              <div className="hidden md:flex md:col-span-2 items-center text-gray-400 truncate">
-                {/* Album would go here */}
-              </div>
-            )}
+            <div className="col-span-1 flex items-center justify-end text-gray-400">{formatDuration(track.duration)}</div>
 
-            <div className="col-span-1 flex items-center justify-end text-gray-400">
-              {formatDuration(track.duration)}
-            </div>
+            <div className="col-span-1 flex items-center justify-end relative">
+              <button
+                className="text-gray-400 hover:text-white"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPlaylistMenu(showPlaylistMenu === track.id ? null : track.id);
+                }}
+              >
+                <MoreHorizontal size={16} />
+              </button>
 
-            <div className="col-span-1 flex items-center justify-end space-x-2 relative">
-              <div className="relative">
-                <button
-                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-gray-400 hover:text-white"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Stop event propagation
-                    setShowPlaylistMenu(showPlaylistMenu === track.id ? null : track.id);
-                  }}
+              {showPlaylistMenu === track.id && (
+                <div
+                  ref={(el) => (menuRefs.current[track.id] = el)}
+                  className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg overflow-hidden"
+                  style={{ zIndex: 10 }}
                 >
-                  <MoreHorizontal size={16} />
-                </button>
-
-                {showPlaylistMenu === track.id && (
-                  <div
-                    ref={(el) => (menuRefs.current[track.id] = el)}
-                    className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg overflow-hidden"
-                    style={{
-                      bottom:
-                        menuRefs.current[track.id]?.getBoundingClientRect().bottom! > window.innerHeight - 200
-                          ? '100%'
-                          : 'auto',
-                      top:
-                        menuRefs.current[track.id]?.getBoundingClientRect().bottom! > window.innerHeight - 200
-                          ? 'auto'
-                          : '100%',
-                    }}
-                    onMouseDown={(e) => e.stopPropagation()}
+                  <button
+                    className={`w-full px-4 py-2 flex justify-between items-center text-white hover:bg-gray-700 ${
+                      isTrackLiked(track) ? 'text-green-500' : ''
+                    }`}
+                    onClick={(e) => handleLikeClick(track, e)}
                   >
-                    <div className="py-1">
-                      <button
-                        className={`w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between ${
-                          isTrackLiked(track) ? 'text-green-500' : ''
-                        }`}
-                        onClick={(e) => handleLikeClick(track, e)}
-                      >
-                        <span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
-                        <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
-                      </button>
-
-                      <div className="px-4 py-2 text-sm text-gray-400">Add to playlist</div>
-                      {playlists.length > 0 ? (
-                        playlists.map((playlist) => (
-                          <button
-                            key={playlist.id}
-                            className="w-full px-4 py-2 text-sm text-left text-white hover:bg-gray-700 flex items-center justify-between"
-                            onClick={(e) => handleAddToPlaylist(track, playlist.id, e)}
-                            disabled={isTrackInPlaylist(track, playlist.id) || addingToPlaylist === playlist.id}
-                          >
-                            <span className="truncate">{playlist.name}</span>
-                            {addingToPlaylist === playlist.id ? (
-                              <div className="animate-spin rounded-full h-4 w-4 border-2 border-green-500 border-t-transparent" />
-                            ) : isTrackInPlaylist(track, playlist.id) ? (
-                              <Check size={16} className="text-green-500" />
-                            ) : (
-                              <Plus size={16} />
-                            )}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="px-4 py-2 text-sm text-gray-400">No playlists available</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+                    {isTrackLiked(track) ? 'Unlike' : 'Like'}
+                    <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}
