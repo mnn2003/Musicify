@@ -74,7 +74,7 @@ const TrackList: React.FC<TrackListProps> = ({
   };
 
   const handleLikeClick = (track: Track, e: React.MouseEvent) => {
-    e.stopPropagation(); // Stop event propagation
+    e.stopPropagation();
 
     if (!isAuthenticated) {
       if (window.confirm('You need to be logged in to like songs. Would you like to log in now?')) {
