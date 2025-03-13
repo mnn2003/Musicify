@@ -2,17 +2,68 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
+import { Menu, X } from 'lucide-react'; // Icons for the mobile header
+import { useAuthStore } from '../store/authStore';
 
 const MainLayout: React.FC = () => {
+  const { user, isAuthenticated } = useAuthStore();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="flex h-screen bg-gray-900 text-white">
-      <Sidebar />
-      
-      <main className="flex-1 overflow-y-auto pb-24">
-        <Outlet />
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto pb-24 md:pb-0 md:pl-64 transition-all duration-300">
+        {/* Mobile Header */}
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-sm p-4 flex items-center justify-between border-b border-gray-800">
+          {/* App Logo */}
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="App Logo" className="w-8 h-8" />
+            <span className="text-xl font-bold">Musicify</span>
+          </div>
+
+          {/* Menu and User Profile Icons */}
+          <div className="flex items-center gap-4">
+            {/* Menu Icon */}
+            <button onClick={toggleSidebar} className="p-2">
+              {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            {/* User Profile Icon */}
+            {isAuthenticated && user && (
+              <div className="flex items-center gap-2">
+                {user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                    {user.name.charAt(0)}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Page Content */}
+        <div className="pt-16 md:pt-0">
+          <Outlet />
+        </div>
       </main>
-      
-      <Player />
+
+      {/* Player */}
+      <div className="fixed bottom-0 left-0 right-0 md:left-64 z-50">
+        <Player />
+      </div>
     </div>
   );
 };
