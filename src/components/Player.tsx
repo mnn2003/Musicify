@@ -81,21 +81,21 @@ const Player: React.FC = () => {
       })
 
       playerRef.current.on("stateChange", (event: any) => {
-        if (event.data === 0) {
-          // Video ended
-          if (repeatMode === 2) {
-            // Repeat one: restart the current track
-            playerRef.current.seekTo(0)
-            playerRef.current.playVideo()
-          } else if (repeatMode === 1) {
-            // Repeat all: play next track (or loop back to first)
-            playNext()
-          } else {
-            // No repeat: play next track if available
-            playNext()
-          }
-        }
-      })
+	  if (event.data === 0) {
+		// Video ended
+		if (repeatMode === 2) {
+		  // Repeat one: restart the current track
+		  playerRef.current.seekTo(0);
+		  playerRef.current.playVideo();
+		} else if (repeatMode === 1) {
+		  // Repeat all: play next track (or loop back to first)
+		  playNext();
+		} else {
+		  // No repeat: play next track if available
+		  playNext();
+		}
+	  }
+	});
 
       playerRef.current.on("ready", () => {
         playerRef.current.setVolume(volume * 100)
@@ -138,6 +138,20 @@ const Player: React.FC = () => {
       })
       audioRef.current = audio
     }
+	
+	audioRef.current.addEventListener("ended", () => {
+  if (repeatMode === 2) {
+    // Repeat one: restart the current track
+    audioRef.current.currentTime = 0;
+    audioRef.current.play();
+  } else if (repeatMode === 1) {
+    // Repeat all: play next track (or loop back to first)
+    playNext();
+  } else {
+    // No repeat: play next track if available
+    playNext();
+  }
+});
 
     return () => {
       if (audioRef.current) {
@@ -344,21 +358,37 @@ const Player: React.FC = () => {
   }
 
   // Get the next track considering shuffle mode
-  const getNextTrack = () => {
-    if (isShuffleOn && queue.length > 1) {
-      // Get a random track that's not the current one
-      const currentIndex = queue.findIndex((track) => currentTrack && track.id === currentTrack.id)
-      let randomIndex
-      do {
-        randomIndex = Math.floor(Math.random() * queue.length)
-      } while (randomIndex === currentIndex && queue.length > 1)
-
-      return queue[randomIndex]
-    } else {
-      // Normal next track logic
-      playNext()
-    }
-  }
+	const getNextTrack = () => {
+	  if (isShuffleOn && queue.length > 1) {
+		// Get a random track that's not the current one
+		const currentIndex = queue.findIndex((track) => currentTrack && track.id === currentTrack.id);
+		let randomIndex;
+		do {
+		  randomIndex = Math.floor(Math.random() * queue.length);
+		} while (randomIndex === currentIndex && queue.length > 1);
+		return queue[randomIndex];
+	  } else {
+		// Normal next track logic
+		return playNext();
+	  }
+	};
+	
+	// Handle next track click
+	const handleNextTrack = () => {
+	  if (repeatMode === 2) {
+		// Repeat one: restart the current track
+		if (currentTrack?.isLocal && audioRef.current) {
+		  audioRef.current.currentTime = 0;
+		  audioRef.current.play();
+		} else if (playerRef.current) {
+		  playerRef.current.seekTo(0);
+		  playerRef.current.playVideo();
+		}
+	  } else {
+		// Use shuffle logic for next track
+		getNextTrack();
+	  }
+	};
 
   // Get the previous track
   const getPreviousTrack = () => {
@@ -463,9 +493,13 @@ const Player: React.FC = () => {
               >
                 {isPlaying ? <Pause size={24} /> : <Play size={24} fill="currentColor" />}
               </button>
-              <button className="text-gray-400 hover:text-white" onClick={playNext} aria-label="Next track">
-                <SkipForward size={24} />
-              </button>
+              <button
+				  className="text-gray-400 hover:text-white"
+				  onClick={handleNextTrack} // Updated function
+				  aria-label="Next track"
+				>
+				  <SkipForward size={24} />
+				</button>
               <button
                 className={`text-gray-400 hover:text-white ${repeatMode > 0 ? "text-green-500" : ""}`}
                 onClick={toggleRepeat}
@@ -582,9 +616,13 @@ const Player: React.FC = () => {
               >
                 {isPlaying ? <Pause size={24} /> : <Play size={24} fill="currentColor" />}
               </button>
-              <button className="text-gray-400 hover:text-white" onClick={playNext} aria-label="Next track">
-                <SkipForward size={24} />
-              </button>
+              <button
+				  className="text-gray-400 hover:text-white"
+				  onClick={handleNextTrack} // Updated function
+				  aria-label="Next track"
+				>
+				  <SkipForward size={24} />
+				</button>
               <button
                 className={`text-gray-400 hover:text-white ${repeatMode > 0 ? "text-green-500" : ""}`}
                 onClick={toggleRepeat}
