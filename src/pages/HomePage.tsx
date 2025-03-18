@@ -22,7 +22,23 @@ const HomePage: React.FC = () => {
     { id: 'jazz', name: 'Jazz', color: '#3F51B5', image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80' },
     { id: 'classical', name: 'Classical', color: '#795548', image: 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80' },
   ];
+  
+const [isLocalMusicLoading, setIsLocalMusicLoading] = useState(true);
+useEffect(() => {
+  const fetchLocalMusic = async () => {
+    try {
+      const tracks = await Promise.all(localTracks.map(convertToTrack));
+      setLocalMusic(tracks);
+    } catch (error) {
+      console.error('Error loading local music:', error);
+    } finally {
+      setIsLocalMusicLoading(false);
+    }
+  };
 
+  fetchLocalMusic();
+}, []);
+  
   useEffect(() => {
     const fetchPopularTracks = async () => {
       setIsLoading(true);
@@ -78,7 +94,10 @@ const HomePage: React.FC = () => {
         )}
       </section>
 
-      {localMusic.length > 0 && (
+     {/* Local Music Section */}
+      {isLocalMusicLoading ? (
+        <p className="text-gray-400">Loading local music...</p>
+        ) : localMusic.length > 0 ? (
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-4">Local Music</h2>
           <div className="bg-gray-900/50 rounded-lg overflow-hidden">
@@ -90,6 +109,8 @@ const HomePage: React.FC = () => {
             />
           </div>
         </section>
+      ) : (
+        <p className="text-gray-400">No local music found.</p>
       )}
 
       <section className="mb-8">
