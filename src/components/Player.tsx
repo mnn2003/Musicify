@@ -47,7 +47,6 @@ const Player: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false)
   const [prevVolume, setPrevVolume] = useState(volume)
   const [showMiniControls, setShowMiniControls] = useState(false)
-  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const playerRef = useRef<any>(null)
   const playerContainerRef = useRef<HTMLDivElement>(null)
@@ -104,13 +103,13 @@ const Player: React.FC = () => {
   useEffect(() => {
     if (!audioRef.current) {
       const audio = new Audio()
-      audio.addEventListener("timeupdate", () => {
+      audio.addEventListener('timeupdate', () => {
         setProgress(audio.currentTime)
       })
-      audio.addEventListener("loadedmetadata", () => {
+      audio.addEventListener('loadedmetadata', () => {
         setDuration(audio.duration)
       })
-      audio.addEventListener("ended", () => {
+      audio.addEventListener('ended', () => {
         playNext()
       })
       audioRef.current = audio
@@ -292,26 +291,17 @@ const Player: React.FC = () => {
     setShowMiniControls(!showMiniControls)
   }
 
-  const openModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
-  }
-
   return (
     <div
       ref={playerContainerRef}
       className={`
-    fixed transition-all duration-300 ease-in-out z-50
-    ${
-      isExpanded
-        ? "inset-0 bg-gradient-to-b from-gray-900 to-black"
-        : "bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800"
-    }
-  `}
-      style={{ maxHeight: isExpanded ? "100vh" : "auto" }}
+        fixed transition-all duration-300 ease-in-out z-50
+        ${
+          isExpanded
+            ? "inset-0 bg-gradient-to-b from-gray-900 to-black"
+            : "bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800"
+        }
+      `}
     >
       {/* Mobile Expanded View */}
       {isExpanded && (
@@ -414,16 +404,23 @@ const Player: React.FC = () => {
           <div className="flex items-center flex-1 min-w-0 mr-2">
             {currentTrack ? (
               <>
-                <div className="flex items-center cursor-pointer flex-1 min-w-0" onClick={openModal}>
+                <div className="relative">
                   <img
                     src={currentTrack.thumbnail || "/placeholder.svg"}
                     alt={currentTrack.title}
                     className="w-12 h-12 sm:w-14 sm:h-14 object-cover mr-2 sm:mr-3 rounded"
                   />
-                  <div className="min-w-0 flex-1">
-                    <div className="text-white text-sm sm:text-base truncate">{currentTrack.title}</div>
-                    <div className="text-gray-400 text-xs sm:text-sm truncate">{currentTrack.artist}</div>
-                  </div>
+                  <button
+                    onClick={() => setIsExpanded(true)}
+                    className="absolute inset-0 md:hidden"
+                    aria-label="Expand player"
+                  >
+                    <span className="sr-only">Expand player</span>
+                  </button>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-white text-sm sm:text-base truncate">{currentTrack.title}</div>
+                  <div className="text-gray-400 text-xs sm:text-sm truncate">{currentTrack.artist}</div>
                 </div>
                 <button
                   className={`ml-2 focus:outline-none ${isLiked ? "text-green-500" : "text-gray-400 hover:text-white"}`}
@@ -526,7 +523,7 @@ const Player: React.FC = () => {
 
         {/* Mobile Mini Controls */}
         {showMiniControls && (
-          <div className="md:hidden mt-2 px-2 pb-2">
+          <div className="md:hidden mt-2 px-2">
             {/* Progress Bar */}
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs text-gray-400 w-8 text-right">{formatTime(progress)}</span>
@@ -542,24 +539,20 @@ const Player: React.FC = () => {
             {/* Controls */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <button className="text-gray-400 p-2" onClick={playPrevious} aria-label="Previous track">
+                <button className="text-gray-400" onClick={playPrevious} aria-label="Previous track">
                   <SkipBack size={20} />
                 </button>
-                <button className="text-gray-400 p-2" onClick={playNext} aria-label="Next track">
+                <button className="text-gray-400" onClick={playNext} aria-label="Next track">
                   <SkipForward size={20} />
                 </button>
               </div>
 
               <div className="flex items-center gap-4">
-                <button
-                  className="text-gray-400 p-2"
-                  onClick={toggleMute}
-                  aria-label={volume === 0 ? "Unmute" : "Mute"}
-                >
+                <button className="text-gray-400" onClick={toggleMute} aria-label={volume === 0 ? "Unmute" : "Mute"}>
                   {volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
                 </button>
                 <button
-                  className="text-gray-400 p-2"
+                  className="text-gray-400"
                   onClick={() => setShowQueue(!showQueue)}
                   aria-label={showQueue ? "Hide queue" : "Show queue"}
                 >
@@ -602,112 +595,6 @@ const Player: React.FC = () => {
             ) : (
               <div className="text-gray-400 text-center py-4">Queue is empty</div>
             )}
-          </div>
-        </div>
-      )}
-      {/* Full Screen Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-[60] flex flex-col overflow-y-auto">
-          <div className="flex justify-end p-4">
-            <button
-              onClick={closeModal}
-              className="text-white hover:text-gray-300 p-2 rounded-full bg-gray-800 bg-opacity-50"
-              aria-label="Close modal"
-            >
-              <Minimize2 size={24} />
-            </button>
-          </div>
-
-          <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8">
-            {currentTrack && (
-              <>
-                <img
-                  src={currentTrack.thumbnail || "/placeholder.svg"}
-                  alt={currentTrack.title}
-                  className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-cover rounded-lg shadow-2xl mb-8"
-                />
-                <h2 className="text-white text-xl md:text-2xl font-bold mb-2 text-center px-4">{currentTrack.title}</h2>
-                <p className="text-gray-400 mb-8 text-center">{currentTrack.artist}</p>
-              </>
-            )}
-
-            {/* Progress Bar */}
-            <div className="w-full max-w-xl flex items-center gap-2 mb-8 px-4">
-              <span className="text-xs md:text-sm text-gray-400 w-12 text-right">{formatTime(progress)}</span>
-              <div
-                className="flex-1 h-2 md:h-3 bg-gray-700 rounded-full cursor-pointer"
-                onClick={handleProgressBarClick}
-              >
-                <div
-                  className="h-full bg-green-500 rounded-full relative group"
-                  style={{ width: `${(progress / duration) * 100 || 0}%` }}
-                >
-                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100" />
-                </div>
-              </div>
-              <span className="text-xs md:text-sm text-gray-400 w-12">{formatTime(duration)}</span>
-            </div>
-
-            {/* Controls */}
-            <div className="flex items-center gap-6 md:gap-10 mb-8">
-              <button className="text-gray-400 hover:text-white" aria-label="Shuffle">
-                <Shuffle size={20} className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-              <button className="text-gray-400 hover:text-white" onClick={playPrevious} aria-label="Previous track">
-                <SkipBack size={24} className="w-6 h-6 md:w-8 md:h-8" />
-              </button>
-              <button
-                className="bg-white rounded-full p-4 md:p-5 text-black hover:scale-105 transition"
-                onClick={togglePlay}
-                aria-label={isPlaying ? "Pause" : "Play"}
-              >
-                {isPlaying ? (
-                  <Pause size={24} className="w-6 h-6 md:w-8 md:h-8" />
-                ) : (
-                  <Play size={24} className="w-6 h-6 md:w-8 md:h-8" fill="currentColor" />
-                )}
-              </button>
-              <button className="text-gray-400 hover:text-white" onClick={playNext} aria-label="Next track">
-                <SkipForward size={24} className="w-6 h-6 md:w-8 md:h-8" />
-              </button>
-              <button className="text-gray-400 hover:text-white" aria-label="Repeat">
-                <Repeat size={20} className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-            </div>
-
-            {/* Volume Control */}
-            <div className="flex items-center gap-3 px-4 w-full max-w-md">
-              <button
-                className="text-gray-400 hover:text-white"
-                onClick={toggleMute}
-                aria-label={volume === 0 ? "Unmute" : "Mute"}
-              >
-                {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-              </button>
-              <div
-                className="w-full h-2 bg-gray-700 rounded-full cursor-pointer"
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect()
-                  const clickPosition = (e.clientX - rect.left) / rect.width
-                  setVolume(Math.max(0, Math.min(1, clickPosition)))
-                  setIsMuted(false)
-                }}
-              >
-                <div className="h-full bg-green-500 rounded-full" style={{ width: `${volume * 100}%` }} />
-              </div>
-            </div>
-
-            {/* Like Button */}
-            <button
-              className={`mt-8 flex items-center gap-2 px-6 py-2 rounded-full border ${
-                isLiked ? "text-green-500 border-green-500" : "text-white border-gray-600"
-              }`}
-              onClick={handleLikeClick}
-              aria-label={isLiked ? "Remove from liked songs" : "Add to liked songs"}
-            >
-              <Heart size={20} fill={isLiked ? "currentColor" : "none"} />
-              <span className="text-sm md:text-base">{isLiked ? "Liked" : "Like"}</span>
-            </button>
           </div>
         </div>
       )}
