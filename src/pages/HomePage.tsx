@@ -46,35 +46,22 @@ const HomePage: React.FC = () => {
     fetchPopularTracks();
   }, []);
 
-// Fetch and calculate duration for local music tracks
-useEffect(() => {
-  const fetchLocalMusic = async () => {
-    setIsLocalMusicLoading(true);
-    try {
-      const tracks = await Promise.all(
-        localTracks.map(async (localTrack) => {
-          return new Promise<Track>((resolve) => {
-            const audio = new Audio(localTrack.audioUrl);
-            audio.addEventListener("loadedmetadata", () => {
-              resolve({
-                ...convertToTrack(localTrack),
-                duration: audio.duration, // Set actual duration
-              });
-            });
-          });
-        })
-      );
-      setLocalMusic(tracks);
-    } catch (error) {
-      console.error("Error loading local music:", error);
-    } finally {
-      setIsLocalMusicLoading(false);
-    }
-  };
+  // Fetch and calculate duration for local music tracks
+  useEffect(() => {
+    const fetchLocalMusic = async () => {
+      setIsLocalMusicLoading(true);
+      try {
+        const tracks = await Promise.all(localTracks.map(convertToTrack));
+        setLocalMusic(tracks);
+      } catch (error) {
+        console.error('Error loading local music:', error);
+      } finally {
+        setIsLocalMusicLoading(false);
+      }
+    };
 
-  fetchLocalMusic();
-}, []);
-
+    fetchLocalMusic();
+  }, []);
 
   const getTimeOfDay = () => {
     const hour = new Date().getHours();
@@ -126,7 +113,7 @@ useEffect(() => {
               tracks={localMusic}
               showHeader={true}
               showArtist={true}
-              showDuration={true}
+              /*showDuration={true}*/
             />
           </div>
         </section>
