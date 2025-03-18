@@ -181,19 +181,6 @@ const TrackList: React.FC<TrackListProps> = ({
               </div>
             )}
             <div className="col-span-1 flex items-center justify-end relative">
-			
-			{/* Like Button */}
-			  <button
-				className="text-gray-400 hover:text-white transition-colors"
-				onClick={(e) => handleLikeClick(track, e)}
-			  >
-				<Heart
-				  size={16}
-				  fill={isTrackLiked(track) ? "currentColor" : "none"}
-				  className={isTrackLiked(track) ? "text-green-500" : ""}
-				/>
-			  </button>
-			  
               <button
                 className="text-gray-400 hover:text-white transition-colors" // Always visible
                 onClick={(e) => {
