@@ -7,7 +7,7 @@ export const localTracks: LocalTrack[] = [
     title: 'Dil Ki Bebasi',
     artist: 'Aman Kumar',
     thumbnail: '/covers/image_dc245143-613b-4834-a58b-d7bf52b23492.jpeg',
-    audioUrl: '/music/Dard Ko Chhupa Ke.mp3',
+    audioUrl: 'https://github.com/mnn2003/Musicify/blob/main/public/music/Dard%20Ko%20Chhupa%20Ke.mp3',
   },
 
   {
