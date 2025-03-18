@@ -6,6 +6,7 @@ import CategoryCard from '../components/CategoryCard';
 import { useAuthStore } from '../store/authStore';
 import { localTracks, convertToTrack } from '../lib/localMusic';
 import TrackList from '../components/TrackList';
+import SkeletonLoader from '../components/SkeletonLoader';
 
 const HomePage: React.FC = () => {
   const [popularTracks, setPopularTracks] = useState<Track[]>([]);
