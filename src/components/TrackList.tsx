@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Play, Heart, MoreHorizontal, Plus, Check, Clock, Pause } from "lucide-react"
@@ -165,10 +164,16 @@ const TrackList: React.FC<TrackListProps> = ({
             onClick={() => handleTrackClick(track)}
           >
             <div className="col-span-1 flex items-center justify-center">
-              <div className={`group-hover:hidden ${isTrackPlaying(track) ? "text-green-500" : ""}`}>{index + 1}</div>
+              <div className="group-hover:hidden">{index + 1}</div>
               <button className="hidden group-hover:block text-white">
                 {isTrackPlaying(track) ? (
-                  <Pause size={16} fill="currentColor" className="text-green-500" />
+                  <div className="w-4 h-4 relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-1 h-3 bg-green-500 mx-px animate-sound-wave"></div>
+                      <div className="w-1 h-2 bg-green-500 mx-px animate-sound-wave animation-delay-200"></div>
+                      <div className="w-1 h-4 bg-green-500 mx-px animate-sound-wave animation-delay-400"></div>
+                    </div>
+                  </div>
                 ) : (
                   <Play size={16} fill="currentColor" />
                 )}
