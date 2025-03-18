@@ -27,6 +27,7 @@ const TrackList: React.FC<TrackListProps> = ({
   const { toggleLike, likedSongs, playlists, addToPlaylist } = usePlaylistStore()
   const { isAuthenticated } = useAuthStore()
   const navigate = useNavigate()
+
   const [showPlaylistMenu, setShowPlaylistMenu] = useState<string | null>(null)
   const [addingToPlaylist, setAddingToPlaylist] = useState<string | null>(null)
   const menuRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
@@ -43,11 +44,18 @@ const TrackList: React.FC<TrackListProps> = ({
         setShowPlaylistMenu(null)
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [showPlaylistMenu])
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = Math.floor(seconds % 60)
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`
+  }
 
   const handleTrackClick = (track: Track) => {
     if (onTrackClick) {
@@ -60,6 +68,7 @@ const TrackList: React.FC<TrackListProps> = ({
         // Add the clicked track and all subsequent tracks to the queue
         const trackIndex = tracks.findIndex((t) => t.id === track.id)
         const remainingTracks = tracks.slice(trackIndex)
+
         // Clear queue and add all tracks
         usePlayerStore.getState().clearQueue()
         remainingTracks.forEach((t) => addToQueue(t))
@@ -69,23 +78,27 @@ const TrackList: React.FC<TrackListProps> = ({
 
   const handleLikeClick = (track: Track, e: React.MouseEvent) => {
     e.stopPropagation() // Stop event propagation
+
     if (!isAuthenticated) {
       if (window.confirm("You need to be logged in to like songs. Would you like to log in now?")) {
         navigate("/login")
       }
       return
     }
+
     toggleLike(track)
   }
 
   const handleAddToPlaylist = async (track: Track, playlistId: string, e: React.MouseEvent) => {
     e.stopPropagation() // Prevent menu from closing
+
     if (!isAuthenticated) {
       if (window.confirm("You need to be logged in to add songs to playlists. Would you like to log in now?")) {
         navigate("/login")
       }
       return
     }
+
     setAddingToPlaylist(playlistId)
     try {
       await addToPlaylist(playlistId, track)
@@ -113,14 +126,17 @@ const TrackList: React.FC<TrackListProps> = ({
   // Calculate menu position to prevent it from going off-screen
   const getMenuPosition = (trackId: string) => {
     if (!trackRefs.current[trackId]) return {}
+
     const trackRect = trackRefs.current[trackId]?.getBoundingClientRect()
     const viewportHeight = window.innerHeight
     const spaceBelow = viewportHeight - (trackRect?.bottom || 0)
     const menuHeight = Math.min(200, 48 + playlists.length * 36) // Approximate menu height
+
     // If there's not enough space below, position above
     if (spaceBelow < menuHeight && (trackRect?.top || 0) > menuHeight) {
       return { bottom: "100%", top: "auto" }
     }
+
     return { top: "100%", bottom: "auto" }
   }
 
@@ -132,9 +148,10 @@ const TrackList: React.FC<TrackListProps> = ({
           <div className="col-span-7 sm:col-span-5">TITLE</div>
           {showArtist && <div className="hidden sm:block sm:col-span-3">ARTIST</div>}
           {showAlbum && <div className="hidden md:block md:col-span-2">ALBUM</div>}
-          <div className="col-span-1"></div> {/* Removed the duration column */}
+          <div className="col-span-1"></div>
         </div>
       )}
+
       <div className="divide-y divide-gray-800">
         {tracks.map((track, index) => (
           <div
@@ -159,6 +176,7 @@ const TrackList: React.FC<TrackListProps> = ({
                 )}
               </button>
             </div>
+
             <div className="col-span-7 sm:col-span-5 flex items-center min-w-0">
               <img
                 src={track.thumbnail || "/placeholder.svg"}
@@ -172,17 +190,20 @@ const TrackList: React.FC<TrackListProps> = ({
                 <div className="sm:hidden text-sm text-gray-400 truncate">{track.artist}</div>
               </div>
             </div>
+
             {showArtist && (
               <div className="hidden sm:flex sm:col-span-3 items-center text-gray-400 truncate">{track.artist}</div>
             )}
+
             {showAlbum && (
               <div className="hidden md:flex md:col-span-2 items-center text-gray-400 truncate">
                 {track.album || "—"}
               </div>
             )}
+
             <div className="col-span-1 flex items-center justify-end relative">
               <button
-                className="text-gray-400 hover:text-white transition-colors" // Always visible
+                className="text-gray-400 hover:text-white transition-colors"
                 onClick={(e) => {
                   e.stopPropagation()
                   setShowPlaylistMenu(showPlaylistMenu === track.id ? null : track.id)
@@ -190,6 +211,7 @@ const TrackList: React.FC<TrackListProps> = ({
               >
                 <MoreHorizontal size={16} />
               </button>
+
               {showPlaylistMenu === track.id && (
                 <div
                   ref={(el) => (menuRefs.current[track.id] = el)}
@@ -207,6 +229,7 @@ const TrackList: React.FC<TrackListProps> = ({
                       <span>{isTrackLiked(track) ? "Unlike" : "Like"}</span>
                       <Heart size={16} fill={isTrackLiked(track) ? "currentColor" : "none"} />
                     </button>
+
                     <div className="px-4 py-2 text-sm text-gray-400">Add to playlist</div>
                     {playlists.length > 0 ? (
                       <div className="max-h-40 overflow-y-auto">
