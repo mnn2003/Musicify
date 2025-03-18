@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getPopularMusicVideos, getVideoDetails } from '../api/youtube';
-import { SearchResult, Track } from '../types';
+import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
 import CategoryCard from '../components/CategoryCard';
 import { useAuthStore } from '../store/authStore';
