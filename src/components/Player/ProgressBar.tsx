@@ -54,7 +54,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ size = 'medium' }) => {
       </div>
 
       {/* Total Duration */}
-      <span className="text-xs text-gray-400 w-10">Hello
+      <span className="text-xs text-gray-400 w-10">
         {formatTime(duration)}
       </span>
     </div>
