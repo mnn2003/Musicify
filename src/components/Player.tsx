@@ -513,12 +513,12 @@ const Player: React.FC = () => {
                 {isPlaying ? <Pause size={24} /> : <Play size={24} fill="currentColor" />}
               </button>
               <button
-				  className="text-gray-400 hover:text-white"
-				  onClick={handleNextTrack} // Updated function
-				  aria-label="Next track"
-				>
-				  <SkipForward size={24} />
-				</button>
+		className="text-gray-400 hover:text-white"
+		onClick={handleNextTrack} // Updated function
+		aria-label="Next track"
+		>
+		<SkipForward size={24} />
+		</button>
               <button
                 className={`text-gray-400 hover:text-white ${repeatMode > 0 ? "text-green-500" : ""}`}
                 onClick={toggleRepeat}
@@ -530,43 +530,42 @@ const Player: React.FC = () => {
             </div>
 
             {/* Volume Control in Expanded View */}
-            
-			<div className="flex items-center gap-3 px-4 w-full max-w-md">
-			  {/* Mute/Unmute Button */}
-			  <button
-				className="text-gray-400 hover:text-white"
-				onClick={toggleMute}
-				aria-label={volume === 0 ? "Unmute" : "Mute"}
-			  >
-				{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-			  </button>
+            <div className="flex items-center gap-3 px-4 w-full max-w-md">
+		{/* Mute/Unmute Button */}
+		<button
+		  className="text-gray-400 hover:text-white"
+		  onClick={toggleMute}
+		  aria-label={volume === 0 ? "Unmute" : "Mute"}
+		  >
+		  {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+		</button>
 
-			  {/* Volume Slider Using <input type="range" /> */}
-			  <input
-				type="range"
-				min={0}
-				max={1}
-				step={0.01}
-				value={volume}
-				onChange={(e) => {
-				  const newVolume = parseFloat(e.target.value);
-				  setVolume(newVolume);
-				  setIsMuted(false);
-
-				  // Update the volume in the audio or YouTube player
-				  if (audioRef.current) {
-					audioRef.current.volume = newVolume;
-				  }
-				  if (playerRef.current) {
-					playerRef.current.setVolume(newVolume * 100);
-				  }
-				}}
-				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
-				style={{
-				  background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
-				}}
-			  />
-			</div>
+	    {/* Volume Slider Using <input type="range" /> */}
+		<input
+		        type="range"
+			min={0}
+			max={1}
+			step={0.01}
+			alue={volume}
+			onChange={(e) => {
+			const newVolume = parseFloat(e.target.value);
+			setVolume(newVolume);
+			setIsMuted(false);
+				
+		    // Update the volume in the audio or YouTube player
+			if (audioRef.current) {
+			audioRef.current.volume = newVolume;
+			}
+			if (playerRef.current) {
+			playerRef.current.setVolume(newVolume * 100);
+			}
+			}}
+			className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+			style={{
+			 background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
+			}}
+			/>
+	</div>
 
             {/* Like Button in Expanded View */}
             <button
@@ -964,45 +963,6 @@ const Player: React.FC = () => {
                 {repeatMode === 2 && <span className="absolute text-[10px] font-bold">1</span>}
               </button>
             </div>
-
-            {/* Volume Control */}
-			
-			<div className="flex items-center gap-3 px-4 w-full max-w-md">
-			  {/* Mute/Unmute Button */}
-			  <button
-				className="text-gray-400 hover:text-white"
-				onClick={toggleMute}
-				aria-label={volume === 0 ? "Unmute" : "Mute"}
-			  >
-				{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-			  </button>
-
-			  {/* Volume Slider Using <input type="range" /> */}
-			  <input
-				type="range"
-				min={0}
-				max={1}
-				step={0.01}
-				value={volume}
-				onChange={(e) => {
-				  const newVolume = parseFloat(e.target.value);
-				  setVolume(newVolume);
-				  setIsMuted(false);
-
-				  // Update the volume in the audio or YouTube player
-				  if (audioRef.current) {
-					audioRef.current.volume = newVolume;
-				  }
-				  if (playerRef.current) {
-					playerRef.current.setVolume(newVolume * 100);
-				  }
-				}}
-				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
-				style={{
-				  background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
-				}}
-			  />
-			</div>
 
             {/* Like Button */}
             <button
