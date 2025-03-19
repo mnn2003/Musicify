@@ -56,142 +56,126 @@ const Player: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Initialize YouTube Player
-  useEffect(() => {
-    if (!playerRef.current) {
-      const container = document.createElement("div")
-      container.style.position = "absolute"
-      container.style.visibility = "hidden"
-      container.style.pointerEvents = "none"
-      container.style.width = "1px"
-      container.style.height = "1px"
-      container.id = "youtube-player"
-      document.body.appendChild(container)
+useEffect(() => {
+  if (!playerRef.current) {
+    const container = document.createElement("div");
+    container.style.position = "absolute";
+    container.style.visibility = "hidden";
+    container.style.pointerEvents = "none";
+    container.style.width = "1px";
+    container.style.height = "1px";
+    container.id = "youtube-player";
+    document.body.appendChild(container);
 
-      playerRef.current = YouTubePlayer("youtube-player", {
-        height: "1",
-        width: "1",
-        playerVars: {
-          autoplay: 1,
-          controls: 0,
-          modestbranding: 1,
-          rel: 0,
-          showinfo: 0,
-          playsinline: 1,
-        },
-      })
+    playerRef.current = YouTubePlayer("youtube-player", {
+      height: "1",
+      width: "1",
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        showinfo: 0,
+        playsinline: 1,
+      },
+    });
 
-      playerRef.current.on("stateChange", (event: any) => {
-	  if (event.data === 0) {
-		// Video ended
-		if (repeatMode === 2) {
-		  // Repeat one: restart the current track
-		  playerRef.current.seekTo(0);
-		  playerRef.current.playVideo();
-		} else if (repeatMode === 1) {
-		  // Repeat all: play next track (or loop back to first)
-		  playNext();
-		} else {
-		  // No repeat: play next track if available
-		  playNext();
-		}
-	  }
-	});
+    // Handle YouTube player state changes
+    playerRef.current.on("stateChange", (event: any) => {
+      if (event.data === 0) {
+        // Video ended
+        handleTrackEnd();
+      }
+    });
 
-      playerRef.current.on("ready", () => {
-        playerRef.current.setVolume(volume * 100)
-      })
-    }
+    // Set initial volume
+    playerRef.current.on("ready", () => {
+      playerRef.current.setVolume(volume * 100);
+    });
+  }
 
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.pauseVideo()
-        const container = document.getElementById("youtube-player")
-        if (container) {
-          document.body.removeChild(container)
-        }
+  return () => {
+    if (playerRef.current) {
+      playerRef.current.pauseVideo();
+      const container = document.getElementById("youtube-player");
+      if (container) {
+        document.body.removeChild(container);
       }
     }
-  }, [])
+  };
+}, [volume]);
 
-  // Initialize audio player for local tracks
-  useEffect(() => {
-    if (!audioRef.current) {
-      const audio = new Audio()
-      audio.addEventListener("timeupdate", () => {
-        setProgress(audio.currentTime)
-      })
-      audio.addEventListener("loadedmetadata", () => {
-        setDuration(audio.duration)
-      })
-      audio.addEventListener("ended", () => {
-        if (repeatMode === 2) {
-          // Repeat one: restart the current track
-          audio.currentTime = 0
-          audio.play()
-        } else if (repeatMode === 1) {
-          // Repeat all: play next track (or loop back to first)
-          playNext()
-        } else {
-          // No repeat: play next track if available
-          playNext()
-        }
-      })
-      audioRef.current = audio
+// Initialize audio player for local tracks
+useEffect(() => {
+  if (!audioRef.current) {
+    const audio = new Audio();
+    audio.addEventListener("timeupdate", () => setProgress(audio.currentTime));
+    audio.addEventListener("loadedmetadata", () => setDuration(audio.duration));
+
+    // Handle audio track end
+    audio.addEventListener("ended", handleTrackEnd);
+    audioRef.current = audio;
+  }
+
+  return () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
     }
-	
-	audioRef.current.addEventListener("ended", () => {
+  };
+}, []);
+
+// Handle track end logic (shared between YouTube and local audio players)
+const handleTrackEnd = () => {
   if (repeatMode === 2) {
     // Repeat one: restart the current track
-    audioRef.current.currentTime = 0;
-    audioRef.current.play();
-  } else if (repeatMode === 1) {
-    // Repeat all: play next track (or loop back to first)
-    playNext();
+    if (currentTrack?.isLocal && audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else if (playerRef.current) {
+      playerRef.current.seekTo(0);
+      playerRef.current.playVideo();
+    }
   } else {
-    // No repeat: play next track if available
-    playNext();
+    // Use shuffle logic for next track
+    const nextTrack = getNextTrack();
+    if (nextTrack) {
+      setCurrentTrack(nextTrack); // Update the current track in the store
+    }
   }
-});
+};
 
-    return () => {
+// Handle track change
+useEffect(() => {
+  if (currentTrack) {
+    if (currentTrack.isLocal && currentTrack.audioUrl) {
+      // Handle local audio file
+      if (playerRef.current) {
+        playerRef.current.pauseVideo();
+      }
       if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
-    }
-  }, [])
-
-  // Handle track change
-  useEffect(() => {
-    if (currentTrack) {
-      if (currentTrack.isLocal && currentTrack.audioUrl) {
-        // Handle local audio file
-        if (playerRef.current) {
-          playerRef.current.pauseVideo()
-        }
-        if (audioRef.current) {
-          audioRef.current.src = currentTrack.audioUrl
-          audioRef.current.load()
-          if (isPlaying) {
-            audioRef.current.play()
-          }
-        }
-      } else if (currentTrack.videoId) {
-        // Handle YouTube video
-        if (audioRef.current) {
-          audioRef.current.pause()
-        }
-        playerRef.current?.loadVideoById(currentTrack.videoId)
+        audioRef.current.src = currentTrack.audioUrl;
+        audioRef.current.load();
         if (isPlaying) {
-          playerRef.current?.playVideo()
-        } else {
-          playerRef.current?.pauseVideo()
+          audioRef.current.play();
         }
       }
-      addToRecentlyPlayed(currentTrack)
-      setDuration(currentTrack.duration)
+    } else if (currentTrack.videoId) {
+      // Handle YouTube video
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      playerRef.current?.loadVideoById(currentTrack.videoId);
+      if (isPlaying) {
+        playerRef.current?.playVideo();
+      } else {
+        playerRef.current?.pauseVideo();
+      }
     }
-  }, [currentTrack, addToRecentlyPlayed, setDuration])
+    addToRecentlyPlayed(currentTrack);
+    setDuration(currentTrack.duration);
+  }
+}, [currentTrack, addToRecentlyPlayed, setDuration]);
 
   // Handle play/pause
   useEffect(() => {
@@ -348,16 +332,16 @@ const Player: React.FC = () => {
   }
 
   // Handle shuffle toggle
-  const toggleShuffle = () => {
-    setIsShuffleOn(!isShuffleOn)
-  }
+	const toggleShuffle = () => {
+	  setIsShuffleOn(!isShuffleOn);
+	};
 
-  // Handle repeat toggle (cycles through: no repeat -> repeat all -> repeat one)
-  const toggleRepeat = () => {
-    setRepeatMode((prevMode) => (prevMode + 1) % 3)
-  }
+	// Handle repeat toggle (cycles through: no repeat -> repeat all -> repeat one)
+	const toggleRepeat = () => {
+	  setRepeatMode((prevMode) => (prevMode + 1) % 3); // Cycle through 0, 1, 2
+	};
 
-  // Get the next track considering shuffle mode
+	// Get the next track considering shuffle mode
 	const getNextTrack = () => {
 	  if (isShuffleOn && queue.length > 1) {
 		// Get a random track that's not the current one
@@ -386,7 +370,10 @@ const Player: React.FC = () => {
 		}
 	  } else {
 		// Use shuffle logic for next track
-		getNextTrack();
+		const nextTrack = getNextTrack();
+		if (nextTrack) {
+		  setCurrentTrack(nextTrack); // Update the current track in the store
+		}
 	  }
 	};
 
