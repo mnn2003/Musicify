@@ -280,6 +280,7 @@ const Player: React.FC = () => {
                 <PlayerControls size="large" />
                 
                 <div className="flex items-center gap-8">
+                  <VolumeControl size="large" />
                   <button
                     className={`p-3 rounded-full border-2 ${
                       isLiked ? 'border-green-500 text-green-500' : 'border-white text-white'
