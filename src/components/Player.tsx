@@ -895,4 +895,4 @@ const Player: React.FC = () => {
   )
 }
 
-export default Playernew
+export default Player
