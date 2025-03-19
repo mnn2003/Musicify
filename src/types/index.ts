@@ -32,6 +32,9 @@ export interface PlayerState {
   volume: number;
   progress: number;
   duration: number;
+  isShuffled: boolean;
+  repeatMode: 'none' | 'all' | 'one';
+  originalQueue: Track[];
 }
 
 export interface SearchResult {
