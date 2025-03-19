@@ -64,7 +64,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ size = 'medium' }) => {
   };
 
   return (
-    <div className="flex items-center w-full gap-2 relative">
+    <div className="flex items-center w-full gap-2">
       {/* Current Time */}
       <span className="text-xs text-gray-400 w-10 text-right">
         {formatTime(progress)}
@@ -74,7 +74,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ size = 'medium' }) => {
       <div
         id="progress-bar"
         className={`flex-1 ${sizes[size]} bg-gray-700 rounded-full cursor-pointer relative`}
-        onMouseDown={handleDragStart}
+        onMouseDown={handleDragStart} // Start dragging when clicking the progress bar
       >
         {/* Filled Progress */}
         <div
@@ -87,6 +87,10 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ size = 'medium' }) => {
           className="absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white rounded-full shadow-md cursor-pointer"
           style={{
             left: `${(progress / duration) * 100}%`
+          }}
+          onMouseDown={(e) => {
+            e.stopPropagation(); // Prevent triggering the parent's onMouseDown
+            handleDragStart();
           }}
         />
       </div>
