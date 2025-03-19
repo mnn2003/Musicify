@@ -36,7 +36,9 @@ const Player: React.FC = () => {
     setDuration,
     playNext,
     playPrevious,
-  } = usePlayerStore()
+    toggleRepeat: toggleRepeatFromStore,
+    toggleShuffle: toggleShuffleFromStore,
+  } = usePlayerStore();
 
   const { toggleLike, likedSongs, addToRecentlyPlayed } = usePlaylistStore()
   const { isAuthenticated } = useAuthStore()
@@ -333,13 +335,13 @@ useEffect(() => {
 
   // Handle shuffle toggle
 	const toggleShuffle = () => {
-	  setIsShuffleOn(!isShuffleOn);
-	};
+		toggleShuffleFromStore(); // Use the `toggleShuffle` function from the store
+	  };
 
 	// Handle repeat toggle (cycles through: no repeat -> repeat all -> repeat one)
-	const toggleRepeat = () => {
-	  setRepeatMode((prevMode) => (prevMode + 1) % 3); // Cycle through 0, 1, 2
-	};
+	 const toggleRepeat = () => {
+		toggleRepeatFromStore(); // Use the `toggleRepeat` function from the store
+	  };
 
 	// Get the next track considering shuffle mode
 	const getNextTrack = () => {
@@ -358,24 +360,23 @@ useEffect(() => {
 	};
 	
 	// Handle next track click
-	const handleNextTrack = () => {
-	  if (repeatMode === 2) {
-		// Repeat one: restart the current track
-		if (currentTrack?.isLocal && audioRef.current) {
-		  audioRef.current.currentTime = 0;
-		  audioRef.current.play();
-		} else if (playerRef.current) {
-		  playerRef.current.seekTo(0);
-		  playerRef.current.playVideo();
+		 const handleNextTrack = () => {
+		const { repeatMode } = usePlayerStore();
+
+		if (repeatMode === "one") {
+		  // Repeat one: Restart the current track
+		  if (currentTrack?.isLocal && audioRef.current) {
+			audioRef.current.currentTime = 0;
+			audioRef.current.play();
+		  } else if (playerRef.current) {
+			playerRef.current.seekTo(0);
+			playerRef.current.playVideo();
+		  }
+		} else {
+		  // Use the `playNext` function from the store
+		  playNext();
 		}
-	  } else {
-		// Use shuffle logic for next track
-		const nextTrack = getNextTrack();
-		if (nextTrack) {
-		  setCurrentTrack(nextTrack); // Update the current track in the store
-		}
-	  }
-	};
+	  };
 
   // Get the previous track
   const getPreviousTrack = () => {
