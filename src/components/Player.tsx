@@ -461,18 +461,7 @@ const Player: React.FC = () => {
             )}
 
             {/* Progress Bar */}
-            /*<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
-              <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
-              <div className="flex-1 h-2 bg-gray-700 rounded-full cursor-pointer" onClick={handleProgressBarClick}>
-                <div
-                  className="h-full bg-green-500 rounded-full relative group"
-                  style={{ width: `${(progress / duration) * 100 || 0}%` }}
-                >
-                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100" />
-                </div>
-              </div>
-              <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
-            </div>*/
+            
 			<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
 			  {/* Current Time */}
 			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
@@ -541,26 +530,7 @@ const Player: React.FC = () => {
             </div>
 
             {/* Volume Control in Expanded View */}
-            /*<div className="flex items-center gap-3 px-4 w-full max-w-md">
-              <button
-                className="text-gray-400 hover:text-white"
-                onClick={toggleMute}
-                aria-label={volume === 0 ? "Unmute" : "Mute"}
-              >
-                {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-              </button>
-              <div
-                className="w-full h-2 bg-gray-700 rounded-full cursor-pointer"
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect()
-                  const clickPosition = (e.clientX - rect.left) / rect.width
-                  setVolume(Math.max(0, Math.min(1, clickPosition)))
-                  setIsMuted(false)
-                }}
-              >
-                <div className="h-full bg-green-500 rounded-full" style={{ width: `${volume * 100}%` }} />
-              </div>
-            </div>*/
+            
 			<div className="flex items-center gap-3 px-4 w-full max-w-md">
 			  {/* Mute/Unmute Button */}
 			  <button
@@ -699,18 +669,6 @@ const Player: React.FC = () => {
               </button>
             </div>
 
-            /*<div className="flex items-center w-full gap-2">
-              <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
-              <div className="flex-1 h-1 bg-gray-700 rounded-full cursor-pointer" onClick={handleProgressBarClick}>
-                <div
-                  className="h-full bg-green-500 rounded-full relative group"
-                  style={{ width: `${(progress / duration) * 100 || 0}%` }}
-                >
-                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100" />
-                </div>
-              </div>
-              <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
-            </div>*/
 			<div className="flex items-center w-full gap-2">
 			  {/* Current Time */}
 			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
@@ -744,33 +702,6 @@ const Player: React.FC = () => {
           </div>
 
           {/* Volume Controls - Desktop */}
-          /*<div className="hidden md:flex items-center justify-end w-1/4 gap-3">
-            <button
-              className="text-gray-400 hover:text-white"
-              onClick={() => setShowQueue(!showQueue)}
-              aria-label={showQueue ? "Hide queue" : "Show queue"}
-            >
-              <ListMusic size={20} />
-            </button>
-            <button
-              className="text-gray-400 hover:text-white"
-              onClick={toggleMute}
-              aria-label={volume === 0 ? "Unmute" : "Mute"}
-            >
-              {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
-            <div
-              className="w-24 h-1 bg-gray-700 rounded-full cursor-pointer"
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect()
-                const clickPosition = (e.clientX - rect.left) / rect.width
-                setVolume(Math.max(0, Math.min(1, clickPosition)))
-                setIsMuted(false)
-              }}
-            >
-              <div className="h-full bg-green-500 rounded-full" style={{ width: `${volume * 100}%` }} />
-            </div>
-          </div>*/
 		  
 		  <div className="hidden md:flex items-center justify-end w-1/4 gap-3">
 		  {/* Show/Hide Queue Button */}
@@ -823,16 +754,6 @@ const Player: React.FC = () => {
         {showMiniControls && (
           <div className="md:hidden mt-2 px-2 pb-2">
             {/* Progress Bar */}
-            /*<div className="flex items-center gap-2 mb-2">
-              <span className="text-xs text-gray-400 w-8 text-right">{formatTime(progress)}</span>
-              <div className="flex-1 h-1.5 bg-gray-700 rounded-full cursor-pointer" onClick={handleProgressBarClick}>
-                <div
-                  className="h-full bg-green-500 rounded-full"
-                  style={{ width: `${(progress / duration) * 100 || 0}%` }}
-                />
-              </div>
-              <span className="text-xs text-gray-400 w-8">{formatTime(duration)}</span>
-            </div>*/
 			
 			<div className="flex items-center gap-2 mb-2">
 			  {/* Current Time */}
@@ -976,21 +897,6 @@ const Player: React.FC = () => {
             )}
 
             {/* Progress Bar */}
-            /*<div className="w-full max-w-xl flex items-center gap-2 mb-8 px-4">
-              <span className="text-xs md:text-sm text-gray-400 w-12 text-right">{formatTime(progress)}</span>
-              <div
-                className="flex-1 h-2 md:h-3 bg-gray-700 rounded-full cursor-pointer"
-                onClick={handleProgressBarClick}
-              >
-                <div
-                  className="h-full bg-green-500 rounded-full relative group"
-                  style={{ width: `${(progress / duration) * 100 || 0}%` }}
-                >
-                  <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100" />
-                </div>
-              </div>
-              <span className="text-xs md:text-sm text-gray-400 w-12">{formatTime(duration)}</span>
-            </div>*/
 			
 			<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
 			  {/* Current Time */}
@@ -1060,26 +966,6 @@ const Player: React.FC = () => {
             </div>
 
             {/* Volume Control */}
-            /*<div className="flex items-center gap-3 px-4 w-full max-w-md">
-              <button
-                className="text-gray-400 hover:text-white"
-                onClick={toggleMute}
-                aria-label={volume === 0 ? "Unmute" : "Mute"}
-              >
-                {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-              </button>
-              <div
-                className="w-full h-2 bg-gray-700 rounded-full cursor-pointer"
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect()
-                  const clickPosition = (e.clientX - rect.left) / rect.width
-                  setVolume(Math.max(0, Math.min(1, clickPosition)))
-                  setIsMuted(false)
-                }}
-              >
-                <div className="h-full bg-green-500 rounded-full" style={{ width: `${volume * 100}%` }} />
-              </div>
-            </div>*/
 			
 			<div className="flex items-center gap-3 px-4 w-full max-w-md">
 			  {/* Mute/Unmute Button */}
