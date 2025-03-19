@@ -15,29 +15,47 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ size = 'medium' }) => {
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  // Handle progress bar click to set the new time
-  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!currentTrack) return;
+  // State for tracking drag interactions
+  const [isDragging, setIsDragging] = React.useState(false);
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickPosition = (e.clientX - rect.left) / rect.width;
+  // Handle drag start
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  // Handle drag move
+  const handleDragMove = (e: MouseEvent) => {
+    if (!isDragging || !currentTrack) return;
+
+    const progressBar = document.getElementById('progress-bar');
+    if (!progressBar) return;
+
+    const rect = progressBar.getBoundingClientRect();
+    const clickPosition = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width)); // Clamp between 0 and 1
     const newTime = clickPosition * duration;
     setProgress(newTime);
   };
 
-  // Handle hover to show the preview time
-  const [hoverPosition, setHoverPosition] = React.useState<number | null>(null);
-
-  const handleProgressBarHover = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!currentTrack) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const hoverX = e.clientX - rect.left;
-    const hoverPercentage = hoverX / rect.width;
-    const hoverTime = hoverPercentage * duration;
-
-    setHoverPosition(hoverTime);
+  // Handle drag end
+  const handleDragEnd = () => {
+    setIsDragging(false);
   };
+
+  // Attach and detach event listeners for drag
+  React.useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('mouseup', handleDragEnd);
+    } else {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [isDragging]);
 
   const sizes = {
     small: 'h-1',
@@ -54,10 +72,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ size = 'medium' }) => {
 
       {/* Progress Bar */}
       <div
+        id="progress-bar"
         className={`flex-1 ${sizes[size]} bg-gray-700 rounded-full cursor-pointer relative`}
-        onClick={handleProgressBarClick}
-        onMouseMove={handleProgressBarHover}
-        onMouseLeave={() => setHoverPosition(null)} // Reset hover position when leaving
+        onMouseDown={handleDragStart}
       >
         {/* Filled Progress */}
         <div
@@ -65,28 +82,13 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ size = 'medium' }) => {
           style={{ width: `${(progress / duration) * 100 || 0}%` }}
         />
 
-        {/* Hover Indicator */}
-        {hoverPosition !== null && (
-          <div
-            className="absolute top-1/2 transform -translate-y-1/2 w-1 h-3 bg-white rounded-full"
-            style={{
-              left: `${(hoverPosition / duration) * 100}%`,
-              pointerEvents: 'none' // Ensure it doesn't interfere with clicks
-            }}
-          />
-        )}
-
-        {/* Hover Time Tooltip */}
-        {hoverPosition !== null && (
-          <div
-            className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-md"
-            style={{
-              left: `${(hoverPosition / duration) * 100}%`
-            }}
-          >
-            {formatTime(hoverPosition)}
-          </div>
-        )}
+        {/* Progress Circle */}
+        <div
+          className="absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white rounded-full shadow-md cursor-pointer"
+          style={{
+            left: `${(progress / duration) * 100}%`
+          }}
+        />
       </div>
 
       {/* Total Duration */}
