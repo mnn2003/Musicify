@@ -1,30 +1,14 @@
-"use client"
-import type React from "react"
-import { useEffect, useRef, useState } from "react"
-import {
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  Volume2,
-  VolumeX,
-  Heart,
-  Repeat,
-  Shuffle,
-  ListMusic,
-  Minimize2,
-  ChevronUp,
-  ChevronDown,
-} from "lucide-react"
-import YouTubePlayer from "youtube-player"
-import { usePlayerStore } from "../store/playerStore"
-import { usePlaylistStore } from "../store/playlistStore"
-import { useAuthStore } from "../store/authStore"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import YouTubePlayer from 'youtube-player';
+import { Heart, ListMusic, X } from 'lucide-react';
+import { usePlayerStore } from '../store/playerStore';
+import { usePlaylistStore } from '../store/playlistStore';
+import { useAuthStore } from '../store/authStore';
 import PlayerControls from './Player/PlayerControls';
-import ProgressBar from './/Player/ProgressBar';
-import VolumeControl from './/Player/VolumeControl';
-import QueuePanel from './/Player/QueuePanel';
+import ProgressBar from './Player/ProgressBar';
+import VolumeControl from './Player/VolumeControl';
+import QueuePanel from './Player/QueuePanel';
 
 const Player: React.FC = () => {
   const {
