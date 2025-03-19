@@ -461,7 +461,7 @@ const Player: React.FC = () => {
             )}
 
             {/* Progress Bar */}
-            <div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
+            /*<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
               <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
               <div className="flex-1 h-2 bg-gray-700 rounded-full cursor-pointer" onClick={handleProgressBarClick}>
                 <div
@@ -472,7 +472,37 @@ const Player: React.FC = () => {
                 </div>
               </div>
               <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
-            </div>
+            </div>*/
+			<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
+			  {/* Current Time */}
+			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
+
+			  {/* Progress Bar Using <input type="range" /> */}
+			  <input
+				type="range"
+				min={0}
+				max={duration}
+				value={progress}
+				onChange={(e) => {
+				  const newTime = parseFloat(e.target.value);
+				  setProgress(newTime);
+
+				  // Update the playback position in the audio or YouTube player
+				  if (currentTrack?.isLocal && audioRef.current) {
+					audioRef.current.currentTime = newTime;
+				  } else if (playerRef.current) {
+					playerRef.current.seekTo(newTime, true);
+				  }
+				}}
+				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+				style={{
+				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+				}}
+			  />
+
+			  {/* Total Duration */}
+			  <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
+			</div>
 
             {/* Controls */}
             <div className="flex items-center gap-8 mb-6">
@@ -511,7 +541,7 @@ const Player: React.FC = () => {
             </div>
 
             {/* Volume Control in Expanded View */}
-            <div className="flex items-center gap-3 px-4 w-full max-w-md">
+            /*<div className="flex items-center gap-3 px-4 w-full max-w-md">
               <button
                 className="text-gray-400 hover:text-white"
                 onClick={toggleMute}
@@ -530,7 +560,43 @@ const Player: React.FC = () => {
               >
                 <div className="h-full bg-green-500 rounded-full" style={{ width: `${volume * 100}%` }} />
               </div>
-            </div>
+            </div>*/
+			<div className="flex items-center gap-3 px-4 w-full max-w-md">
+			  {/* Mute/Unmute Button */}
+			  <button
+				className="text-gray-400 hover:text-white"
+				onClick={toggleMute}
+				aria-label={volume === 0 ? "Unmute" : "Mute"}
+			  >
+				{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+			  </button>
+
+			  {/* Volume Slider Using <input type="range" /> */}
+			  <input
+				type="range"
+				min={0}
+				max={1}
+				step={0.01}
+				value={volume}
+				onChange={(e) => {
+				  const newVolume = parseFloat(e.target.value);
+				  setVolume(newVolume);
+				  setIsMuted(false);
+
+				  // Update the volume in the audio or YouTube player
+				  if (audioRef.current) {
+					audioRef.current.volume = newVolume;
+				  }
+				  if (playerRef.current) {
+					playerRef.current.setVolume(newVolume * 100);
+				  }
+				}}
+				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+				style={{
+				  background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
+				}}
+			  />
+			</div>
 
             {/* Like Button in Expanded View */}
             <button
@@ -633,7 +699,7 @@ const Player: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center w-full gap-2">
+            /*<div className="flex items-center w-full gap-2">
               <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
               <div className="flex-1 h-1 bg-gray-700 rounded-full cursor-pointer" onClick={handleProgressBarClick}>
                 <div
@@ -644,11 +710,41 @@ const Player: React.FC = () => {
                 </div>
               </div>
               <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
-            </div>
+            </div>*/
+			<div className="flex items-center w-full gap-2">
+			  {/* Current Time */}
+			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
+
+			  {/* Progress Bar Using <input type="range" /> */}
+			  <input
+				type="range"
+				min={0}
+				max={duration}
+				value={progress}
+				onChange={(e) => {
+				  const newTime = parseFloat(e.target.value);
+				  setProgress(newTime);
+
+				  // Update the playback position in the audio or YouTube player
+				  if (currentTrack?.isLocal && audioRef.current) {
+					audioRef.current.currentTime = newTime;
+				  } else if (playerRef.current) {
+					playerRef.current.seekTo(newTime, true);
+				  }
+				}}
+				className="flex-1 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
+				style={{
+				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+				}}
+			  />
+
+			  {/* Total Duration */}
+			  <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
+			</div>
           </div>
 
           {/* Volume Controls - Desktop */}
-          <div className="hidden md:flex items-center justify-end w-1/4 gap-3">
+          /*<div className="hidden md:flex items-center justify-end w-1/4 gap-3">
             <button
               className="text-gray-400 hover:text-white"
               onClick={() => setShowQueue(!showQueue)}
@@ -674,14 +770,60 @@ const Player: React.FC = () => {
             >
               <div className="h-full bg-green-500 rounded-full" style={{ width: `${volume * 100}%` }} />
             </div>
-          </div>
+          </div>*/
+		  
+		  <div className="hidden md:flex items-center justify-end w-1/4 gap-3">
+		  {/* Show/Hide Queue Button */}
+		  <button
+			className="text-gray-400 hover:text-white"
+			onClick={() => setShowQueue(!showQueue)}
+			aria-label={showQueue ? "Hide queue" : "Show queue"}
+		  >
+			<ListMusic size={20} />
+		  </button>
+
+		  {/* Mute/Unmute Button */}
+		  <button
+			className="text-gray-400 hover:text-white"
+			onClick={toggleMute}
+			aria-label={volume === 0 ? "Unmute" : "Mute"}
+		  >
+			{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+		  </button>
+
+		  {/* Volume Slider Using <input type="range" /> */}
+		  <input
+			type="range"
+			min={0}
+			max={1}
+			step={0.01}
+			value={volume}
+			onChange={(e) => {
+			  const newVolume = parseFloat(e.target.value);
+			  setVolume(newVolume);
+			  setIsMuted(false);
+
+			  // Update the volume in the audio or YouTube player
+			  if (audioRef.current) {
+				audioRef.current.volume = newVolume;
+			  }
+			  if (playerRef.current) {
+				playerRef.current.setVolume(newVolume * 100);
+			  }
+			}}
+			className="w-24 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
+			style={{
+			  background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
+			}}
+		  />
+		</div>
         </div>
 
         {/* Mobile Mini Controls */}
         {showMiniControls && (
           <div className="md:hidden mt-2 px-2 pb-2">
             {/* Progress Bar */}
-            <div className="flex items-center gap-2 mb-2">
+            /*<div className="flex items-center gap-2 mb-2">
               <span className="text-xs text-gray-400 w-8 text-right">{formatTime(progress)}</span>
               <div className="flex-1 h-1.5 bg-gray-700 rounded-full cursor-pointer" onClick={handleProgressBarClick}>
                 <div
@@ -690,7 +832,38 @@ const Player: React.FC = () => {
                 />
               </div>
               <span className="text-xs text-gray-400 w-8">{formatTime(duration)}</span>
-            </div>
+            </div>*/
+			
+			<div className="flex items-center gap-2 mb-2">
+			  {/* Current Time */}
+			  <span className="text-xs text-gray-400 w-8 text-right">{formatTime(progress)}</span>
+
+			  {/* Progress Bar Using <input type="range" /> */}
+			  <input
+				type="range"
+				min={0}
+				max={duration}
+				value={progress}
+				onChange={(e) => {
+				  const newTime = parseFloat(e.target.value);
+				  setProgress(newTime);
+
+				  // Update the playback position in the audio or YouTube player
+				  if (currentTrack?.isLocal && audioRef.current) {
+					audioRef.current.currentTime = newTime;
+				  } else if (playerRef.current) {
+					playerRef.current.seekTo(newTime, true);
+				  }
+				}}
+				className="flex-1 h-1.5 bg-gray-700 rounded-full appearance-none cursor-pointer"
+				style={{
+				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+				}}
+			  />
+
+			  {/* Total Duration */}
+			  <span className="text-xs text-gray-400 w-8">{formatTime(duration)}</span>
+			</div>
 
             {/* Controls */}
             <div className="flex items-center justify-between">
@@ -803,7 +976,7 @@ const Player: React.FC = () => {
             )}
 
             {/* Progress Bar */}
-            <div className="w-full max-w-xl flex items-center gap-2 mb-8 px-4">
+            /*<div className="w-full max-w-xl flex items-center gap-2 mb-8 px-4">
               <span className="text-xs md:text-sm text-gray-400 w-12 text-right">{formatTime(progress)}</span>
               <div
                 className="flex-1 h-2 md:h-3 bg-gray-700 rounded-full cursor-pointer"
@@ -817,7 +990,38 @@ const Player: React.FC = () => {
                 </div>
               </div>
               <span className="text-xs md:text-sm text-gray-400 w-12">{formatTime(duration)}</span>
-            </div>
+            </div>*/
+			
+			<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
+			  {/* Current Time */}
+			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
+
+			  {/* Progress Bar Using <input type="range" /> */}
+			  <input
+				type="range"
+				min={0}
+				max={duration}
+				value={progress}
+				onChange={(e) => {
+				  const newTime = parseFloat(e.target.value);
+				  setProgress(newTime);
+
+				  // Update the playback position in the audio or YouTube player
+				  if (currentTrack?.isLocal && audioRef.current) {
+					audioRef.current.currentTime = newTime;
+				  } else if (playerRef.current) {
+					playerRef.current.seekTo(newTime, true);
+				  }
+				}}
+				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+				style={{
+				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+				}}
+			  />
+
+			  {/* Total Duration */}
+			  <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
+			</div>
 
             {/* Controls */}
             <div className="flex items-center gap-6 md:gap-10 mb-8">
@@ -856,7 +1060,7 @@ const Player: React.FC = () => {
             </div>
 
             {/* Volume Control */}
-            <div className="flex items-center gap-3 px-4 w-full max-w-md">
+            /*<div className="flex items-center gap-3 px-4 w-full max-w-md">
               <button
                 className="text-gray-400 hover:text-white"
                 onClick={toggleMute}
@@ -875,7 +1079,44 @@ const Player: React.FC = () => {
               >
                 <div className="h-full bg-green-500 rounded-full" style={{ width: `${volume * 100}%` }} />
               </div>
-            </div>
+            </div>*/
+			
+			<div className="flex items-center gap-3 px-4 w-full max-w-md">
+			  {/* Mute/Unmute Button */}
+			  <button
+				className="text-gray-400 hover:text-white"
+				onClick={toggleMute}
+				aria-label={volume === 0 ? "Unmute" : "Mute"}
+			  >
+				{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+			  </button>
+
+			  {/* Volume Slider Using <input type="range" /> */}
+			  <input
+				type="range"
+				min={0}
+				max={1}
+				step={0.01}
+				value={volume}
+				onChange={(e) => {
+				  const newVolume = parseFloat(e.target.value);
+				  setVolume(newVolume);
+				  setIsMuted(false);
+
+				  // Update the volume in the audio or YouTube player
+				  if (audioRef.current) {
+					audioRef.current.volume = newVolume;
+				  }
+				  if (playerRef.current) {
+					playerRef.current.setVolume(newVolume * 100);
+				  }
+				}}
+				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+				style={{
+				  background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
+				}}
+			  />
+			</div>
 
             {/* Like Button */}
             <button
