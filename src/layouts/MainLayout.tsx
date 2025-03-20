@@ -32,7 +32,7 @@ const MainLayout: React.FC = () => {
             <span className="text-xl font-bold">Musicify</span>
           </Link>
 
-          {/* Menu and User Profile Icons */}
+          {/* Menu , User Profile Icons */}
           <div className="flex items-center gap-4">
             {/* User Profile Icon */}
             {isAuthenticated && user && (
