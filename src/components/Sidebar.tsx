@@ -59,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         `}
       >
         <div className="p-6">
-          {/* Musicify Logo */}
+          {/* Musicify Logo*/}
           <Link
             to="/"
             className="flex items-center gap-2 mb-8 cursor-pointer"
@@ -69,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <span className="text-xl font-bold">Musicify</span>
           </Link>
 
-          {/* Navigation Links */}
+          {/* Navigation Link*/}
           <nav className="space-y-6">
             <div className="space-y-2">
               <Link
@@ -106,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </Link>
             </div>
 
-            {/* Playlist Links */}
+            {/* Playlist Link*/}
             <div className="space-y-2">
               <Link
                 to="/liked-songs"
