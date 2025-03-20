@@ -196,14 +196,6 @@ const ProfilePage: React.FC = () => {
         )}
       </div>
 
-      <div className="flex justify-between items-center">
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 bg-opacity-20 text-red-500 px-6 py-2 rounded-full font-medium hover:bg-opacity-30 transition-colors"
-        >
-          Log Out
-        </button>
-      </div>
     </div>
   );
 };
