@@ -1,8 +1,8 @@
 import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
-import { Menu, X, Music2 } from 'lucide-react';
+import { Menu, X, Music2} from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 const MainLayout: React.FC = () => {
@@ -23,17 +23,14 @@ const MainLayout: React.FC = () => {
         {/* Mobile Header */}
         <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-sm p-4 flex items-center justify-between border-b border-gray-800">
           {/* App Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => setIsSidebarOpen(false)}
-          >
+          <div className="flex items-center gap-2">
             <Music2 size={32} className="text-green-500" />
             <span className="text-xl font-bold">Musicify</span>
-          </Link>
-
+          </div>
+          
           {/* Menu and User Profile Icons */}
           <div className="flex items-center gap-4">
+           
             {/* User Profile Icon */}
             {isAuthenticated && user && (
               <div className="flex items-center gap-2">
@@ -50,11 +47,12 @@ const MainLayout: React.FC = () => {
                 )}
               </div>
             )}
-
-            {/* Menu Icon */}
+            
+             {/* Menu Icon */}
             <button onClick={toggleSidebar} className="p-2">
               {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
+            
           </div>
         </div>
 
