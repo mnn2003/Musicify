@@ -32,7 +32,7 @@ const MainLayout: React.FC = () => {
             <span className="text-xl font-bold">Musicify</span>
           </Link>
 
-          {/* Menu , User Profile Icons */}
+          {/* Menu and User Profile Icons */}
           <div className="flex items-center gap-4">
             {/* User Profile Icon */}
             {isAuthenticated && user && (
@@ -65,7 +65,7 @@ const MainLayout: React.FC = () => {
       </main>
 
       {/* Player */}
-      <div className="fixed bottom-0 left-0 right-0 md:left-64 z-50 bg-gray-900 border-t border-gray-800 h-24">
+      <div className="fixed bottom-0 left-0 right-0 md:left-64 z-50 bg-gray-900 border-t border-gray-800">
         <Player />
       </div>
     </div>
