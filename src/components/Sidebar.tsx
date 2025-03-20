@@ -58,10 +58,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         `}
       >
         <div className="p-6">
-          <div className="flex items-center gap-2 mb-8">
+          {/* Musicify Logo with Link to Home */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 mb-8 cursor-pointer"
+            onClick={onClose}
+          >
             <Music2 size={32} className="text-green-500" />
             <span className="text-xl font-bold">Musicify</span>
-          </div>
+          </Link>
 
           <nav className="space-y-6">
             {/* Navigation Links */}
@@ -166,7 +171,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="p-4 border-t border-gray-800">
           {isAuthenticated && user ? (
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+              {/* User Avatar/Name Link to Profile */}
+              <Link
+                to="/profile"
+                className="flex items-center gap-3"
+                onClick={onClose}
+              >
                 {user.avatar ? (
                   <img
                     src={user.avatar}
@@ -179,7 +189,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   </div>
                 )}
                 <span className="text-sm font-medium">{user.name}</span>
-              </div>
+              </Link>
               <button
                 onClick={() => {
                   logout();
