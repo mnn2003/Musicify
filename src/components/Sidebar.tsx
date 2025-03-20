@@ -54,8 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       <div
         className={`
           fixed md:static top-0 left-0 w-64 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out z-50
-          ${isOpen || window.innerWidth >= 768 ? 'translate-x-0' : '-translate-x-full'}
-          h-screen overflow-y-auto
+          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          h-[calc(100vh-96px)] overflow-y-auto
         `}
       >
         <div className="p-6">
@@ -168,7 +168,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* User's Section */}
+        {/* User Section */}
         <div className="p-4 border-t border-gray-800">
           {isAuthenticated && user ? (
             <div className="flex items-center justify-between">
