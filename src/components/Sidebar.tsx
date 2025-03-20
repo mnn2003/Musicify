@@ -55,11 +55,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         className={`
           fixed md:static top-0 left-0 w-64 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out z-50
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          h-[calc(100vh-96px)] md:h-screen overflow-y-auto
+          h-[calc(100vh-96px)] overflow-y-auto
         `}
       >
         <div className="p-6">
-          {/* Musicify Logo*/}
+          {/* Musicify Logo */}
           <Link
             to="/"
             className="flex items-center gap-2 mb-8 cursor-pointer"
@@ -69,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <span className="text-xl font-bold">Musicify</span>
           </Link>
 
-          {/* Navigation Link*/}
+          {/* Navigation Links */}
           <nav className="space-y-6">
             <div className="space-y-2">
               <Link
@@ -106,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </Link>
             </div>
 
-            {/* Playlist Link*/}
+            {/* Playlist Links */}
             <div className="space-y-2">
               <Link
                 to="/liked-songs"
