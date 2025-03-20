@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         className={`
           fixed md:static top-0 left-0 w-64 bg-gray-900 text-white transform transition-transform duration-300 ease-in-out z-50
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          h-[calc(100vh-96px)] overflow-y-auto
+          ${isOpen ? 'h-screen overflow-y-auto' : 'h-0 overflow-hidden'}
         `}
       >
         <div className="p-6">
