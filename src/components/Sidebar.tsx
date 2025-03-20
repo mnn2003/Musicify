@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Overlay for Mobile */}
       {isOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-40"
           onClick={onClose}
         />
       )}
@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <div
         className={`
-          fixed md:static top-0 left-0 h-full bg-black text-white w-64 transform transition-transform duration-300 ease-in-out z-50
+          fixed md:static top-0 left-0 h-full bg-gray-900 text-white w-64 transform transition-transform duration-300 ease-in-out z-50
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
@@ -194,7 +194,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           ) : (
             <Link
               to="/login"
-              className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full text-white hover:bg-gray-700 transition-colors w-full justify-center"
+              className="flex items-center gap-2 px-4 py-2 bg-green-500 text-black font-medium py-3 rounded-full hover:bg-green-400 transition-colors w-full justify-center"
               onClick={onClose}
             >
               <LogIn size={18} />
