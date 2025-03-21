@@ -13,6 +13,7 @@ interface TrackListProps {
   showArtist?: boolean;
   showAlbum?: boolean;
   onTrackClick?: (track: Track) => void;
+  isInLibrary?: boolean; // Indicates if the track list belongs to a library
 }
 
 const TrackList: React.FC<TrackListProps> = ({
@@ -21,6 +22,7 @@ const TrackList: React.FC<TrackListProps> = ({
   showArtist = true,
   showAlbum = false,
   onTrackClick,
+  isInLibrary = false,
 }) => {
   const { setCurrentTrack, currentTrack, isPlaying, togglePlay, addToQueue } = usePlayerStore();
   const { toggleLike, likedSongs, playlists, addToPlaylist, removeFromLibrary } = usePlaylistStore();
@@ -237,13 +239,15 @@ const TrackList: React.FC<TrackListProps> = ({
                         <span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
                         <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
                       </button>
-                      <button
-                        className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 flex items-center gap-2"
-                        onClick={(e) => handleRemoveFromLibrary(track, e)}
-                      >
-                        <Trash2 size={16} />
-                        <span>Remove from Library</span>
-                      </button>
+                      {isInLibrary && (
+                        <button
+                          className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 flex items-center gap-2"
+                          onClick={(e) => handleRemoveFromLibrary(track, e)}
+                        >
+                          <Trash2 size={16} />
+                          <span>Remove from Library</span>
+                        </button>
+                      )}
                       <div className="px-4 py-2 text-sm text-gray-400">Add to playlist</div>
                       {playlists.length > 0 ? (
                         playlists.map((playlist) => (
