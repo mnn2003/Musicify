@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Heart, MoreHorizontal, Plus, Check, Clock, ListMusic } from 'lucide-react';
+import { Play, Heart, MoreHorizontal, Plus, Check, Clock, ListMusic, Trash2 } from 'lucide-react';
 import { Track } from '../types';
 import { usePlayerStore } from '../store/playerStore';
 import { usePlaylistStore } from '../store/playlistStore';
@@ -23,7 +23,7 @@ const TrackList: React.FC<TrackListProps> = ({
   onTrackClick,
 }) => {
   const { setCurrentTrack, currentTrack, isPlaying, togglePlay, addToQueue } = usePlayerStore();
-  const { toggleLike, likedSongs, playlists, addToPlaylist } = usePlaylistStore();
+  const { toggleLike, likedSongs, playlists, addToPlaylist, removeFromLibrary } = usePlaylistStore();
   const { isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
   const [showPlaylistMenu, setShowPlaylistMenu] = useState<string | null>(null);
@@ -111,6 +111,23 @@ const TrackList: React.FC<TrackListProps> = ({
     }
   };
 
+  const handleRemoveFromLibrary = async (track: Track, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      if (window.confirm('You need to be logged in to remove songs from your library. Would you like to log in now?')) {
+        navigate('/login');
+      }
+      return;
+    }
+    try {
+      await removeFromLibrary(track);
+      toast.success('Removed from library');
+    } catch (error) {
+      toast.error('Failed to remove from library');
+      console.error('Error removing from library:', error);
+    }
+  };
+
   const isTrackPlaying = (track: Track) => {
     return currentTrack?.id === track.id && isPlaying;
   };
@@ -146,7 +163,7 @@ const TrackList: React.FC<TrackListProps> = ({
           >
             <div className="col-span-1 flex items-center justify-center">
               <div className="group-hover:hidden">{index + 1}</div>
-              <button className="text-white">
+              <button className="hidden group-hover:block text-white">
                 {isTrackPlaying(track) ? (
                   <div className="w-4 h-4 relative">
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -189,7 +206,7 @@ const TrackList: React.FC<TrackListProps> = ({
             <div className="col-span-1 flex items-center justify-end space-x-2 relative">
               <div className="relative">
                 <button
-                  className="text-gray-400 hover:text-white focus:outline-none"
+                  className="opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity text-gray-400 hover:text-white"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowPlaylistMenu(showPlaylistMenu === track.id ? null : track.id);
@@ -219,6 +236,13 @@ const TrackList: React.FC<TrackListProps> = ({
                       >
                         <span>{isTrackLiked(track) ? 'Unlike' : 'Like'}</span>
                         <Heart size={16} fill={isTrackLiked(track) ? 'currentColor' : 'none'} />
+                      </button>
+                      <button
+                        className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 flex items-center gap-2"
+                        onClick={(e) => handleRemoveFromLibrary(track, e)}
+                      >
+                        <Trash2 size={16} />
+                        <span>Remove from Library</span>
                       </button>
                       <div className="px-4 py-2 text-sm text-gray-400">Add to playlist</div>
                       {playlists.length > 0 ? (
