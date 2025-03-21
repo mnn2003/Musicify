@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getPopularMusicVideos, getVideoDetails, searchVideos } from '../api/youtube';
 import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
+import TrackList from '../components/TrackList';
 import CategoryCard from '../components/CategoryCard';
 import { useAuthStore } from '../store/authStore';
 import { localTracks, convertToTrack } from '../lib/localMusic';
@@ -166,15 +167,25 @@ const HomePage: React.FC = () => {
         )}
       </section>
 
-      {/* Local Music Section */}
-      {localMusic.length > 0 && (
+    {/* Local Music Section */}
+      {isLocalMusicLoading ? (
+        <p className="text-gray-400">Loading local music...</p>
+      ) : localMusic.length > 0 ? (
         <section className="mb-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Local Music</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {localMusic.map(track => (
-              <TrackCard key={track.id} track={track} />
-            ))}
+          <h2 className="text-2xl font-bold text-white mb-4">Local Music</h2>
+          <div className="bg-gray-900/50 rounded-lg overflow-hidden">
+            <TrackList 
+              tracks={localMusic}
+              showHeader={true}
+              showArtist={true}
+              /*showDuration={true}*/
+            />
           </div>
+        </section>
+      ) : (
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-4">Local Music</h2>
+          <p className="text-gray-400">No local music found. Add some to your library!</p>
         </section>
       )}
 
