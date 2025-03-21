@@ -91,6 +91,23 @@ const HomePage: React.FC = () => {
     return 'evening';
   };
 
+    // Fetch and calculate duration for local music tracks
+  useEffect(() => {
+    const fetchLocalMusic = async () => {
+      setIsLocalMusicLoading(true);
+      try {
+        const tracks = await Promise.all(localTracks.map(convertToTrack));
+        setLocalMusic(tracks);
+      } catch (error) {
+        console.error('Error loading local music:', error);
+      } finally {
+        setIsLocalMusicLoading(false);
+      }
+    };
+
+    fetchLocalMusic();
+  }, []);
+  
   return (
     <div className="p-4 sm:p-8">
       {/* Greeting Section */}
