@@ -201,16 +201,6 @@ const TrackList: React.FC<TrackListProps> = ({
                   <div
                     ref={(el) => (menuRefs.current[track.id] = el)}
                     className="absolute z-50 right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg overflow-hidden"
-                    style={{
-                      bottom:
-                        menuRefs.current[track.id]?.getBoundingClientRect().bottom! > window.innerHeight - 200
-                          ? '100%'
-                          : 'auto',
-                      top:
-                        menuRefs.current[track.id]?.getBoundingClientRect().bottom! > window.innerHeight - 200
-                          ? 'auto'
-                          : '100%',
-                    }}
                     onMouseDown={(e) => e.stopPropagation()}
                   >
                     <div className="py-1">
