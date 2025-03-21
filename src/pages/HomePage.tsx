@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getPopularMusicVideos, getVideoDetails, searchVideos } from '../api/youtube';
 import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
-import TrackList from '../components/TrackList'; // Import TrackList
+import TrackListHome from '../components/TrackListHome'; // Updated import for TrackListHome
 import CategoryCard from '../components/CategoryCard';
 import { useAuthStore } from '../store/authStore';
 import { localTracks, convertToTrack } from '../lib/localMusic';
@@ -193,7 +193,7 @@ const HomePage: React.FC = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <TrackList
+          <TrackListHome
             tracks={trendingBollywood}
             showHeader={true}
             showArtist={true}
@@ -213,7 +213,7 @@ const HomePage: React.FC = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <TrackList
+          <TrackListHome
             tracks={popularTracks}
             showHeader={true}
             showArtist={true}
@@ -227,7 +227,7 @@ const HomePage: React.FC = () => {
       ) : localMusic.length > 0 ? (
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-4">Local Music</h2>
-          <TrackList
+          <TrackListHome
             tracks={localMusic}
             showHeader={true}
             showArtist={true}
