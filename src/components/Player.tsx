@@ -1,4 +1,3 @@
-"use client"
 import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -36,6 +35,7 @@ const Player: React.FC = () => {
     setDuration,
     playNext,
     playPrevious,
+    setCurrentTrack,
   } = usePlayerStore()
 
   const { toggleLike, likedSongs, addToRecentlyPlayed } = usePlaylistStore()
@@ -56,126 +56,126 @@ const Player: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Initialize YouTube Player
-useEffect(() => {
-  if (!playerRef.current) {
-    const container = document.createElement("div");
-    container.style.position = "absolute";
-    container.style.visibility = "hidden";
-    container.style.pointerEvents = "none";
-    container.style.width = "1px";
-    container.style.height = "1px";
-    container.id = "youtube-player";
-    document.body.appendChild(container);
+  useEffect(() => {
+    if (!playerRef.current) {
+      const container = document.createElement("div")
+      container.style.position = "absolute"
+      container.style.visibility = "hidden"
+      container.style.pointerEvents = "none"
+      container.style.width = "1px"
+      container.style.height = "1px"
+      container.id = "youtube-player"
+      document.body.appendChild(container)
 
-    playerRef.current = YouTubePlayer("youtube-player", {
-      height: "1",
-      width: "1",
-      playerVars: {
-        autoplay: 1,
-        controls: 0,
-        modestbranding: 1,
-        rel: 0,
-        showinfo: 0,
-        playsinline: 1,
-      },
-    });
+      playerRef.current = YouTubePlayer("youtube-player", {
+        height: "1",
+        width: "1",
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0,
+          playsinline: 1,
+        },
+      })
 
-    // Handle YouTube player state changes
-    playerRef.current.on("stateChange", (event: any) => {
-      if (event.data === 0) {
-        // Video ended
-        handleTrackEnd();
-      }
-    });
+      // Handle YouTube player state changes
+      playerRef.current.on("stateChange", (event: any) => {
+        if (event.data === 0) {
+          // Video ended
+          handleTrackEnd()
+        }
+      })
 
-    // Set initial volume
-    playerRef.current.on("ready", () => {
-      playerRef.current.setVolume(volume * 100);
-    });
-  }
-
-  return () => {
-    if (playerRef.current) {
-      playerRef.current.pauseVideo();
-      const container = document.getElementById("youtube-player");
-      if (container) {
-        document.body.removeChild(container);
-      }
+      // Set initial volume
+      playerRef.current.on("ready", () => {
+        playerRef.current.setVolume(volume * 100)
+      })
     }
-  };
-}, [volume]);
 
-// Initialize audio player for local tracks
-useEffect(() => {
-  if (!audioRef.current) {
-    const audio = new Audio();
-    audio.addEventListener("timeupdate", () => setProgress(audio.currentTime));
-    audio.addEventListener("loadedmetadata", () => setDuration(audio.duration));
-
-    // Handle audio track end
-    audio.addEventListener("ended", handleTrackEnd);
-    audioRef.current = audio;
-  }
-
-  return () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-  };
-}, []);
-
-// Handle track end logic (shared between YouTube and local audio players)
-const handleTrackEnd = () => {
-  if (repeatMode === 2) {
-    // Repeat one: restart the current track
-    if (currentTrack?.isLocal && audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    } else if (playerRef.current) {
-      playerRef.current.seekTo(0);
-      playerRef.current.playVideo();
-    }
-  } else {
-    // Use shuffle logic for next track
-    const nextTrack = getNextTrack();
-    if (nextTrack) {
-      setCurrentTrack(nextTrack); // Update the current track in the store
-    }
-  }
-};
-
-// Handle track change
-useEffect(() => {
-  if (currentTrack) {
-    if (currentTrack.isLocal && currentTrack.audioUrl) {
-      // Handle local audio file
+    return () => {
       if (playerRef.current) {
-        playerRef.current.pauseVideo();
-      }
-      if (audioRef.current) {
-        audioRef.current.src = currentTrack.audioUrl;
-        audioRef.current.load();
-        if (isPlaying) {
-          audioRef.current.play();
+        playerRef.current.pauseVideo()
+        const container = document.getElementById("youtube-player")
+        if (container) {
+          document.body.removeChild(container)
         }
       }
-    } else if (currentTrack.videoId) {
-      // Handle YouTube video
+    }
+  }, [volume])
+
+  // Initialize audio player for local tracks
+  useEffect(() => {
+    if (!audioRef.current) {
+      const audio = new Audio()
+      audio.addEventListener("timeupdate", () => setProgress(audio.currentTime))
+      audio.addEventListener("loadedmetadata", () => setDuration(audio.duration))
+
+      // Handle audio track end
+      audio.addEventListener("ended", handleTrackEnd)
+      audioRef.current = audio
+    }
+
+    return () => {
       if (audioRef.current) {
-        audioRef.current.pause();
-      }
-      playerRef.current?.loadVideoById(currentTrack.videoId);
-      if (isPlaying) {
-        playerRef.current?.playVideo();
-      } else {
-        playerRef.current?.pauseVideo();
+        audioRef.current.pause()
+        audioRef.current = null
       }
     }
-    addToRecentlyPlayed(currentTrack);
-    setDuration(currentTrack.duration);
+  }, [])
+
+  // Handle track end logic (shared between YouTube and local audio players)
+  const handleTrackEnd = () => {
+    if (repeatMode === 2) {
+      // Repeat one: restart the current track
+      if (currentTrack?.isLocal && audioRef.current) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play()
+      } else if (playerRef.current) {
+        playerRef.current.seekTo(0)
+        playerRef.current.playVideo()
+      }
+    } else {
+      // Use shuffle logic for next track
+      const nextTrack = getNextTrack()
+      if (nextTrack) {
+        setCurrentTrack(nextTrack) // Now setCurrentTrack is properly defined
+      }
+    }
   }
-}, [currentTrack, addToRecentlyPlayed, setDuration]);
+
+  // Handle track change
+  useEffect(() => {
+    if (currentTrack) {
+      if (currentTrack.isLocal && currentTrack.audioUrl) {
+        // Handle local audio file
+        if (playerRef.current) {
+          playerRef.current.pauseVideo()
+        }
+        if (audioRef.current) {
+          audioRef.current.src = currentTrack.audioUrl
+          audioRef.current.load()
+          if (isPlaying) {
+            audioRef.current.play()
+          }
+        }
+      } else if (currentTrack.videoId) {
+        // Handle YouTube video
+        if (audioRef.current) {
+          audioRef.current.pause()
+        }
+        playerRef.current?.loadVideoById(currentTrack.videoId)
+        if (isPlaying) {
+          playerRef.current?.playVideo()
+        } else {
+          playerRef.current?.pauseVideo()
+        }
+      }
+      addToRecentlyPlayed(currentTrack)
+      setDuration(currentTrack.duration)
+    }
+  }, [currentTrack, addToRecentlyPlayed, setDuration])
 
   // Handle play/pause
   useEffect(() => {
@@ -332,50 +332,50 @@ useEffect(() => {
   }
 
   // Handle shuffle toggle
-	const toggleShuffle = () => {
-	  setIsShuffleOn(!isShuffleOn);
-	};
+  const toggleShuffle = () => {
+    setIsShuffleOn(!isShuffleOn)
+  }
 
-	// Handle repeat toggle (cycles through: no repeat -> repeat all -> repeat one)
-	const toggleRepeat = () => {
-	  setRepeatMode((prevMode) => (prevMode + 1) % 3); // Cycle through 0, 1, 2
-	};
+  // Handle repeat toggle (cycles through: no repeat -> repeat all -> repeat one)
+  const toggleRepeat = () => {
+    setRepeatMode((prevMode) => (prevMode + 1) % 3) // Cycle through 0, 1, 2
+  }
 
-	// Get the next track considering shuffle mode
-	const getNextTrack = () => {
-	  if (isShuffleOn && queue.length > 1) {
-		// Get a random track that's not the current one
-		const currentIndex = queue.findIndex((track) => currentTrack && track.id === currentTrack.id);
-		let randomIndex;
-		do {
-		  randomIndex = Math.floor(Math.random() * queue.length);
-		} while (randomIndex === currentIndex && queue.length > 1);
-		return queue[randomIndex];
-	  } else {
-		// Normal next track logic
-		return playNext();
-	  }
-	};
-	
-	// Handle next track click
-	const handleNextTrack = () => {
-	  if (repeatMode === 2) {
-		// Repeat one: restart the current track
-		if (currentTrack?.isLocal && audioRef.current) {
-		  audioRef.current.currentTime = 0;
-		  audioRef.current.play();
-		} else if (playerRef.current) {
-		  playerRef.current.seekTo(0);
-		  playerRef.current.playVideo();
-		}
-	  } else {
-		// Use shuffle logic for next track
-		const nextTrack = getNextTrack();
-		if (nextTrack) {
-		  setCurrentTrack(nextTrack); // Update the current track in the store
-		}
-	  }
-	};
+  // Get the next track considering shuffle mode
+  const getNextTrack = () => {
+    if (isShuffleOn && queue.length > 1) {
+      // Get a random track that's not the current one
+      const currentIndex = queue.findIndex((track) => currentTrack && track.id === currentTrack.id)
+      let randomIndex
+      do {
+        randomIndex = Math.floor(Math.random() * queue.length)
+      } while (randomIndex === currentIndex && queue.length > 1)
+      return queue[randomIndex]
+    } else {
+      // Normal next track logic
+      return playNext()
+    }
+  }
+
+  // Handle next track click
+  const handleNextTrack = () => {
+    if (repeatMode === 2) {
+      // Repeat one: restart the current track
+      if (currentTrack?.isLocal && audioRef.current) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play()
+      } else if (playerRef.current) {
+        playerRef.current.seekTo(0)
+        playerRef.current.playVideo()
+      }
+    } else {
+      // Use shuffle logic for next track
+      const nextTrack = getNextTrack()
+      if (nextTrack) {
+        setCurrentTrack(nextTrack) // Now setCurrentTrack is properly defined
+      }
+    }
+  }
 
   // Get the previous track
   const getPreviousTrack = () => {
@@ -448,37 +448,36 @@ useEffect(() => {
             )}
 
             {/* Progress Bar */}
-            
-			<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
-			  {/* Current Time */}
-			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
+            <div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
+              {/* Current Time */}
+              <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
 
-			  {/* Progress Bar Using <input type="range" /> */}
-			  <input
-				type="range"
-				min={0}
-				max={duration}
-				value={progress}
-				onChange={(e) => {
-				  const newTime = parseFloat(e.target.value);
-				  setProgress(newTime);
+              {/* Progress Bar Using <input type="range" /> */}
+              <input
+                type="range"
+                min={0}
+                max={duration}
+                value={progress}
+                onChange={(e) => {
+                  const newTime = parseFloat(e.target.value)
+                  setProgress(newTime)
 
-				  // Update the playback position in the audio or YouTube player
-				  if (currentTrack?.isLocal && audioRef.current) {
-					audioRef.current.currentTime = newTime;
-				  } else if (playerRef.current) {
-					playerRef.current.seekTo(newTime, true);
-				  }
-				}}
-				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
-				style={{
-				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
-				}}
-			  />
+                  // Update the playback position in the audio or YouTube player
+                  if (currentTrack?.isLocal && audioRef.current) {
+                    audioRef.current.currentTime = newTime
+                  } else if (playerRef.current) {
+                    playerRef.current.seekTo(newTime, true)
+                  }
+                }}
+                className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+                }}
+              />
 
-			  {/* Total Duration */}
-			  <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
-			</div>
+              {/* Total Duration */}
+              <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
+            </div>
 
             {/* Controls */}
             <div className="flex items-center gap-8 mb-6">
@@ -499,13 +498,9 @@ useEffect(() => {
               >
                 {isPlaying ? <Pause size={24} /> : <Play size={24} fill="currentColor" />}
               </button>
-              <button
-		className="text-gray-400 hover:text-white"
-		onClick={handleNextTrack} // Updated function
-		aria-label="Next track"
-		>
-		<SkipForward size={24} />
-		</button>
+              <button className="text-gray-400 hover:text-white" onClick={handleNextTrack} aria-label="Next track">
+                <SkipForward size={24} />
+              </button>
               <button
                 className={`text-gray-400 hover:text-white ${repeatMode > 0 ? "text-green-500" : ""}`}
                 onClick={toggleRepeat}
@@ -518,41 +513,41 @@ useEffect(() => {
 
             {/* Volume Control in Expanded View */}
             <div className="flex items-center gap-3 px-4 w-full max-w-md">
-		{/* Mute/Unmute Button */}
-		<button
-		  className="text-gray-400 hover:text-white"
-		  onClick={toggleMute}
-		  aria-label={volume === 0 ? "Unmute" : "Mute"}
-		  >
-		  {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-		</button>
+              {/* Mute/Unmute Button */}
+              <button
+                className="text-gray-400 hover:text-white"
+                onClick={toggleMute}
+                aria-label={volume === 0 ? "Unmute" : "Mute"}
+              >
+                {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
 
-	    {/* Volume Slider Using <input type="range" /> */}
-		<input
-		        type="range"
-			min={0}
-			max={1}
-			step={0.01}
-			alue={volume}
-			onChange={(e) => {
-			const newVolume = parseFloat(e.target.value);
-			setVolume(newVolume);
-			setIsMuted(false);
-				
-		    // Update the volume in the audio or YouTube player
-			if (audioRef.current) {
-			audioRef.current.volume = newVolume;
-			}
-			if (playerRef.current) {
-			playerRef.current.setVolume(newVolume * 100);
-			}
-			}}
-			className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
-			style={{
-			 background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
-			}}
-			/>
-	</div>
+              {/* Volume Slider Using <input type="range" /> */}
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={volume}
+                onChange={(e) => {
+                  const newVolume = parseFloat(e.target.value)
+                  setVolume(newVolume)
+                  setIsMuted(false)
+
+                  // Update the volume in the audio or YouTube player
+                  if (audioRef.current) {
+                    audioRef.current.volume = newVolume
+                  }
+                  if (playerRef.current) {
+                    playerRef.current.setVolume(newVolume * 100)
+                  }
+                }}
+                className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
+                }}
+              />
+            </div>
 
             {/* Like Button in Expanded View */}
             <button
@@ -638,13 +633,9 @@ useEffect(() => {
               >
                 {isPlaying ? <Pause size={24} /> : <Play size={24} fill="currentColor" />}
               </button>
-              <button
-				  className="text-gray-400 hover:text-white"
-				  onClick={handleNextTrack} // Updated function
-				  aria-label="Next track"
-				>
-				  <SkipForward size={24} />
-				</button>
+              <button className="text-gray-400 hover:text-white" onClick={handleNextTrack} aria-label="Next track">
+                <SkipForward size={24} />
+              </button>
               <button
                 className={`text-gray-400 hover:text-white ${repeatMode > 0 ? "text-green-500" : ""}`}
                 onClick={toggleRepeat}
@@ -655,122 +646,120 @@ useEffect(() => {
               </button>
             </div>
 
-			<div className="flex items-center w-full gap-2">
-			  {/* Current Time */}
-			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
+            <div className="flex items-center w-full gap-2">
+              {/* Current Time */}
+              <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
 
-			  {/* Progress Bar Using <input type="range" /> */}
-			  <input
-				type="range"
-				min={0}
-				max={duration}
-				value={progress}
-				onChange={(e) => {
-				  const newTime = parseFloat(e.target.value);
-				  setProgress(newTime);
+              {/* Progress Bar Using <input type="range" /> */}
+              <input
+                type="range"
+                min={0}
+                max={duration}
+                value={progress}
+                onChange={(e) => {
+                  const newTime = parseFloat(e.target.value)
+                  setProgress(newTime)
 
-				  // Update the playback position in the audio or YouTube player
-				  if (currentTrack?.isLocal && audioRef.current) {
-					audioRef.current.currentTime = newTime;
-				  } else if (playerRef.current) {
-					playerRef.current.seekTo(newTime, true);
-				  }
-				}}
-				className="flex-1 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
-				style={{
-				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
-				}}
-			  />
+                  // Update the playback position in the audio or YouTube player
+                  if (currentTrack?.isLocal && audioRef.current) {
+                    audioRef.current.currentTime = newTime
+                  } else if (playerRef.current) {
+                    playerRef.current.seekTo(newTime, true)
+                  }
+                }}
+                className="flex-1 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+                }}
+              />
 
-			  {/* Total Duration */}
-			  <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
-			</div>
+              {/* Total Duration */}
+              <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
+            </div>
           </div>
 
           {/* Volume Controls - Desktop */}
-		  
-		  <div className="hidden md:flex items-center justify-end w-1/4 gap-3">
-		  {/* Show/Hide Queue Button */}
-		  <button
-			className="text-gray-400 hover:text-white"
-			onClick={() => setShowQueue(!showQueue)}
-			aria-label={showQueue ? "Hide queue" : "Show queue"}
-		  >
-			<ListMusic size={20} />
-		  </button>
+          <div className="hidden md:flex items-center justify-end w-1/4 gap-3">
+            {/* Show/Hide Queue Button */}
+            <button
+              className="text-gray-400 hover:text-white"
+              onClick={() => setShowQueue(!showQueue)}
+              aria-label={showQueue ? "Hide queue" : "Show queue"}
+            >
+              <ListMusic size={20} />
+            </button>
 
-		  {/* Mute/Unmute Button */}
-		  <button
-			className="text-gray-400 hover:text-white"
-			onClick={toggleMute}
-			aria-label={volume === 0 ? "Unmute" : "Mute"}
-		  >
-			{volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-		  </button>
+            {/* Mute/Unmute Button */}
+            <button
+              className="text-gray-400 hover:text-white"
+              onClick={toggleMute}
+              aria-label={volume === 0 ? "Unmute" : "Mute"}
+            >
+              {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
+            </button>
 
-		  {/* Volume Slider Using <input type="range" /> */}
-		  <input
-			type="range"
-			min={0}
-			max={1}
-			step={0.01}
-			value={volume}
-			onChange={(e) => {
-			  const newVolume = parseFloat(e.target.value);
-			  setVolume(newVolume);
-			  setIsMuted(false);
+            {/* Volume Slider Using <input type="range" /> */}
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={volume}
+              onChange={(e) => {
+                const newVolume = parseFloat(e.target.value)
+                setVolume(newVolume)
+                setIsMuted(false)
 
-			  // Update the volume in the audio or YouTube player
-			  if (audioRef.current) {
-				audioRef.current.volume = newVolume;
-			  }
-			  if (playerRef.current) {
-				playerRef.current.setVolume(newVolume * 100);
-			  }
-			}}
-			className="w-24 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
-			style={{
-			  background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
-			}}
-		  />
-		</div>
+                // Update the volume in the audio or YouTube player
+                if (audioRef.current) {
+                  audioRef.current.volume = newVolume
+                }
+                if (playerRef.current) {
+                  playerRef.current.setVolume(newVolume * 100)
+                }
+              }}
+              className="w-24 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, green ${volume * 100}%, gray 0%)`,
+              }}
+            />
+          </div>
         </div>
 
         {/* Mobile Mini Controls */}
         {showMiniControls && (
           <div className="md:hidden mt-2 px-2 pb-2">
             {/* Progress Bar */}
-			
-			<div className="flex items-center gap-2 mb-2">
-			  {/* Current Time */}
-			  <span className="text-xs text-gray-400 w-8 text-right">{formatTime(progress)}</span>
+            <div className="flex items-center gap-2 mb-2">
+              {/* Current Time */}
+              <span className="text-xs text-gray-400 w-8 text-right">{formatTime(progress)}</span>
 
-			  {/* Progress Bar Using <input type="range" /> */}
-			  <input
-				type="range"
-				min={0}
-				max={duration}
-				value={progress}
-				onChange={(e) => {
-				  const newTime = parseFloat(e.target.value);
-				  setProgress(newTime);
+              {/* Progress Bar Using <input type="range" /> */}
+              <input
+                type="range"
+                min={0}
+                max={duration}
+                value={progress}
+                onChange={(e) => {
+                  const newTime = parseFloat(e.target.value)
+                  setProgress(newTime)
 
-				  // Update the playback position in the audio or YouTube player
-				  if (currentTrack?.isLocal && audioRef.current) {
-					audioRef.current.currentTime = newTime;
-				  } else if (playerRef.current) {
-					playerRef.current.seekTo(newTime, true);
-				  }
-				}}
-				className="flex-1 h-1.5 bg-gray-700 rounded-full appearance-none cursor-pointer"
-				style={{
-				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
-				}}
-			  />
+                  // Update the playback position in the audio or YouTube player
+                  if (currentTrack?.isLocal && audioRef.current) {
+                    audioRef.current.currentTime = newTime
+                  } else if (playerRef.current) {
+                    playerRef.current.seekTo(newTime, true)
+                  }
+                }}
+                className="flex-1 h-1.5 bg-gray-700 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+                }}
+              />
 
-			  {/* Total Duration */}
-			  <span className="text-xs text-gray-400 w-8">{formatTime(duration)}</span>
-			</div>
+              {/* Total Duration */}
+              <span className="text-xs text-gray-400 w-8">{formatTime(duration)}</span>
+            </div>
 
             {/* Controls */}
             <div className="flex items-center justify-between">
@@ -785,7 +774,7 @@ useEffect(() => {
                 <button className="text-gray-400 p-2" onClick={playPrevious} aria-label="Previous track">
                   <SkipBack size={20} />
                 </button>
-                <button className="text-gray-400 p-2" onClick={playNext} aria-label="Next track">
+                <button className="text-gray-400 p-2" onClick={handleNextTrack} aria-label="Next track">
                   <SkipForward size={20} />
                 </button>
                 <button
@@ -799,11 +788,7 @@ useEffect(() => {
               </div>
 
               <div className="flex items-center gap-4">
-                <button
-                  className="text-gray-400 p-2"
-                  onClick={toggleMute}
-                  aria-label={volume === 0 ? "Unmute" : "Mute"}
-                >
+                <button className="text-gray-400 p-2" onClick={toggleMute} aria-label={volume === 0 ? "Unmute" : "Mute"}>
                   {volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
                 </button>
                 <button
@@ -853,6 +838,7 @@ useEffect(() => {
           </div>
         </div>
       )}
+
       {/* Full Screen Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-90 z-[60] flex flex-col overflow-y-auto">
@@ -883,37 +869,36 @@ useEffect(() => {
             )}
 
             {/* Progress Bar */}
-			
-			<div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
-			  {/* Current Time */}
-			  <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
+            <div className="w-full max-w-md flex items-center gap-2 mb-8 px-4">
+              {/* Current Time */}
+              <span className="text-xs text-gray-400 w-10 text-right">{formatTime(progress)}</span>
 
-			  {/* Progress Bar Using <input type="range" /> */}
-			  <input
-				type="range"
-				min={0}
-				max={duration}
-				value={progress}
-				onChange={(e) => {
-				  const newTime = parseFloat(e.target.value);
-				  setProgress(newTime);
+              {/* Progress Bar Using <input type="range" /> */}
+              <input
+                type="range"
+                min={0}
+                max={duration}
+                value={progress}
+                onChange={(e) => {
+                  const newTime = parseFloat(e.target.value)
+                  setProgress(newTime)
 
-				  // Update the playback position in the audio or YouTube player
-				  if (currentTrack?.isLocal && audioRef.current) {
-					audioRef.current.currentTime = newTime;
-				  } else if (playerRef.current) {
-					playerRef.current.seekTo(newTime, true);
-				  }
-				}}
-				className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
-				style={{
-				  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
-				}}
-			  />
+                  // Update the playback position in the audio or YouTube player
+                  if (currentTrack?.isLocal && audioRef.current) {
+                    audioRef.current.currentTime = newTime
+                  } else if (playerRef.current) {
+                    playerRef.current.seekTo(newTime, true)
+                  }
+                }}
+                className="flex-1 h-2 bg-gray-700 rounded-full appearance-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, green ${((progress / duration) * 100 || 0)}%, gray 0%)`,
+                }}
+              />
 
-			  {/* Total Duration */}
-			  <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
-			</div>
+              {/* Total Duration */}
+              <span className="text-xs text-gray-400 w-10">{formatTime(duration)}</span>
+            </div>
 
             {/* Controls */}
             <div className="flex items-center gap-6 md:gap-10 mb-8">
@@ -938,7 +923,7 @@ useEffect(() => {
                   <Play size={24} className="w-6 h-6 md:w-8 md:h-8" fill="currentColor" />
                 )}
               </button>
-              <button className="text-gray-400 hover:text-white" onClick={playNext} aria-label="Next track">
+              <button className="text-gray-400 hover:text-white" onClick={handleNextTrack} aria-label="Next track">
                 <SkipForward size={24} className="w-6 h-6 md:w-8 md:h-8" />
               </button>
               <button
