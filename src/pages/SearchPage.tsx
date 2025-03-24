@@ -4,6 +4,7 @@ import { searchVideos, getVideoDetails } from '../api/youtube';
 import { SearchResult, Track } from '../types';
 import TrackList from '../components/TrackList';
 import SearchBar from '../components/SearchBar';
+import CategoryCard from '../components/CategoryCard';
 
 const SearchPage: React.FC = () => {
   const location = useLocation();
@@ -12,6 +13,15 @@ const SearchPage: React.FC = () => {
   const [results, setResults] = useState<Track[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const categories = [
+    { id: 'pop', name: 'Pop', color: '#1DB954', image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&q=80' },
+    { id: 'rock', name: 'Rock', color: '#E91E63', image: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=200&q=80' },
+    { id: 'hiphop', name: 'Hip Hop', color: '#FF9800', image: 'https://images.unsplash.com/photo-1547355253-ff0740f6e8c1?w=200&q=80' },
+    { id: 'electronic', name: 'Electronic', color: '#9C27B0', image: 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=200&q=80' },
+    { id: 'jazz', name: 'Jazz', color: '#3F51B5', image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=200&q=80' },
+    { id: 'classical', name: 'Classical', color: '#795548', image: 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=200&q=80' },
+  ];
   
   useEffect(() => {
     const fetchResults = async () => {
@@ -81,6 +91,22 @@ const SearchPage: React.FC = () => {
           <p>Find songs, artists, and more</p>
         </div>
       )}
+	  
+	  {/* Categories Section */}
+      <section className="mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Browse Categories</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {categories.map(category => (
+            <CategoryCard
+              key={category.id}
+              id={category.id}
+              name={category.name}
+              color={category.color}
+              image={category.image}
+            />
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
