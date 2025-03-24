@@ -231,7 +231,7 @@ const TrackList: React.FC<TrackListProps> = ({
             </div>
             <div className="col-span-1 flex items-center justify-end space-x-2">
               <button
-                className="text-gray-400 hover:text-white focus:outline-none"
+                className="text-gray-400 hover:text-white focus:outline-none transform rotate-90"
                 onClick={(e) => {
                   e.stopPropagation()
                   e.preventDefault()
