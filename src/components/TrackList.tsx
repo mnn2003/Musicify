@@ -261,8 +261,14 @@ const TrackList: React.FC<TrackListProps> = ({
                   className="w-12 h-12 object-cover rounded"
                 />
                 <div className="truncate">
-                  <div className="font-medium text-white truncate">{currentMenuTrack.title}</div>
-                  <div className="text-sm text-gray-400 truncate">{currentMenuTrack.artist}</div>
+                  <div className="font-medium text-white truncate">
+                    {currentMenuTrack.title.length > 19
+                      ? `${currentMenuTrack.title.slice(0, 19)}...`
+                      : currentMenuTrack.title}
+                  </div>
+                  <div className="text-sm text-gray-400 truncate">
+                    {currentMenuTrack.artist}
+                  </div>
                 </div>
               </div>
               <button className="text-gray-400 hover:text-white" onClick={handleCloseMenu}>
