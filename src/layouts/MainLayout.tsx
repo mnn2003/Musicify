@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Player from '../components/Player';
@@ -10,13 +10,28 @@ const MainLayout: React.FC = () => {
   const { user, isAuthenticated } = useAuthStore();
   const { theme } = useThemeStore();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null); // Ref for sidebar
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        setIsSidebarOpen(false); // Close sidebar
+      }
+    };
+
+    if (isSidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isSidebarOpen]);
 
   return (
     <div className={`flex h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
       {/* Sidebar - Responsive */}
-      <div className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out 
+      <div ref={sidebarRef} className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out 
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:relative md:w-64`}>
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       </div>
