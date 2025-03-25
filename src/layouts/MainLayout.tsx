@@ -19,7 +19,8 @@ const MainLayout: React.FC = () => {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto pb-24 md:pb-24 lg:pb-24 md:pl-0 mt-0 mb-5 transition-all duration-300">
+      <main className="flex-1 overflow-y-auto pb-24 md:pb-24 lg:pb-24 md:pl-0 mt-0 mb-5 transition-all duration-300"
+  style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         {/* Mobile Header */}
         <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900/90 backdrop-blur-sm p-4 flex items-center justify-between border-b border-gray-300 dark:border-gray-800 transition-all">
           {/* App Logo */}
