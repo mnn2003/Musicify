@@ -36,7 +36,10 @@ function App() {
   }, [isAuthenticated, fetchUserData]);
 
   useEffect(() => {
-    document.documentElement.className = theme;
+    if (theme) {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+    }
   }, [theme]);
 
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
