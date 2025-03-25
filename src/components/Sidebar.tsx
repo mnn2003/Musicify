@@ -176,7 +176,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* User Section */}
-        <div className="px-2 py-2 flex-1 overflow-y-auto pb-30 border-t border-gray-800"> 
+        <div className="px-2 py-2 flex-1 overflow-y-auto pb-50 border-t border-gray-800"> 
           {isAuthenticated && user ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
