@@ -56,11 +56,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         className={`
           fixed md:static top-0 left-0 h-full bg-black text-white w-64 transform transition-transform duration-300 ease-in-out z-50
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} 
-          flex flex-col
         `}
-        style={{ maxHeight: '100vh' }}
+        style={{ maxHeight: '100vh', overflowY: 'auto' }}
       >
-        <div className="p-6 flex-shrink-0">
+        <div className="p-6">
           <div className="flex items-center gap-2 mb-8">
             <Music2 size={32} className="text-green-500" />
             <span className="text-xl font-bold">Musicify</span>
@@ -101,9 +100,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <Library size={20} />
                 <span>Your Library</span>
               </Link>
+
+              <Link
+                to="/settings"
+                className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${
+                  isActive('/settings') ? 'bg-gray-800' : 'hover:bg-gray-800'
+                }`}
+                onClick={onClose}
+              >
+                <Settings size={20} />
+                <span>Settings</span>
+              </Link>
             </div>
 
-            {/* Playlist Actions */}
+            {/* Playlist Links */}
             <div className="space-y-2">
               <Link
                 to="/liked-songs"
@@ -138,9 +148,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </nav>
         </div>
 
-        {/* Playlists Section - Scrollable area */}
-        <div className="px-6 py-2 flex-1 overflow-y-auto">
-          <div className="px-2 py-2 text-sm text-gray-400 font-medium">
+        {/* Playlists Section */}
+        <div className="px-2 py-2 flex-1 overflow-y-auto">
+          <div className="px-4 py-2 text-sm text-gray-400 font-medium">
             YOUR PLAYLISTS
           </div>
           <div className="space-y-1">
@@ -165,8 +175,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* User Section - Fixed at bottom */}
-        <div className="p-4 border-t border-gray-800 flex-shrink-0">
+        {/* User Section */}
+        <div className="px-2 py-2 flex-1 overflow-y-auto pb-30 border-t border-gray-800"> 
           {isAuthenticated && user ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -174,7 +184,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   <img
                     src={user.avatar}
                     alt={user.name}
-                    className="w-8 h-8 rounded-full object-cover"
+                    className="w-8 h-8 rounded-full"
                   />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
@@ -183,26 +193,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 )}
                 <span className="text-sm font-medium">{user.name}</span>
               </div>
-              <div className="flex items-center gap-4">
-                <Link
-                  to="/settings"
-                  className="text-gray-400 hover:text-white"
-                  title="Settings"
-                  onClick={onClose}
-                >
-                  <Settings size={18} />
-                </Link>
-                <button
-                  onClick={() => {
-                    logout();
-                    onClose();
-                  }}
-                  className="text-gray-400 hover:text-white"
-                  title="Log out"
-                >
-                  <LogOut size={18} />
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  logout();
+                  onClose();
+                }}
+                className="text-gray-400 hover:text-white"
+                title="Log out"
+              >
+                <LogOut size={18} />
+              </button>
             </div>
           ) : (
             <Link
@@ -220,4 +220,4 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default Sidebar;
+export default Sidebar
