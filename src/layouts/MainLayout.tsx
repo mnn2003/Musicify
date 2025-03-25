@@ -58,7 +58,7 @@ const MainLayout: React.FC = () => {
         </div>
 
         {/* Page Content */}
-        <div className="pt-16 md:pt-0">
+        <div className="pt-16 pb-24 md:pb-32">
           <Outlet />
         </div>
       </main>
