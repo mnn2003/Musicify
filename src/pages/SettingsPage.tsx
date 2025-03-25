@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useThemeStore } from '../store/themeStore';
 
 const SettingsPage: React.FC = () => {
   const { theme, setTheme } = useThemeStore();
+
+  useEffect(() => {
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+  }, [theme]);
 
   return (
     <div className="p-8">
@@ -18,7 +23,7 @@ const SettingsPage: React.FC = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => setTheme('light')}
-                className={`p-2 rounded-md flex items-center gap-2 ${
+                className={`p-2 rounded-md flex items-center gap-2 transition-all ${
                   theme === 'light'
                     ? 'bg-green-500 text-black'
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
@@ -29,7 +34,7 @@ const SettingsPage: React.FC = () => {
               </button>
               <button
                 onClick={() => setTheme('dark')}
-                className={`p-2 rounded-md flex items-center gap-2 ${
+                className={`p-2 rounded-md flex items-center gap-2 transition-all ${
                   theme === 'dark'
                     ? 'bg-green-500 text-black'
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
