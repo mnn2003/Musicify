@@ -23,7 +23,7 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 function App() {
   const { checkAuth, isAuthenticated, isLoading: isAuthLoading } = useAuthStore();
   const { fetchUserData, isLoading: isUserDataLoading } = usePlaylistStore();
-  const { theme } = useThemeStore();
+ const { themeMode } = useThemeStore();
 
   useEffect(() => {
     checkAuth();
