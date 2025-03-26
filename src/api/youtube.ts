@@ -152,24 +152,36 @@ export const searchChannels = async (query: string, maxResults = 5): Promise<any
     const response = await axios.get(`${BASE_URL}/search`, {
       params: {
         part: 'snippet',
-        maxResults,
+        maxResults: 50, // Fetch more results to filter manually
         q: query,
         type: 'channel',
         key: API_KEY
       }
     });
 
-    const results = response.data.items.map((item: any) => ({
-      id: item.id.channelId,
-      name: item.snippet.title,
-      image: item.snippet.thumbnails.high?.url || 'https://via.placeholder.com/300x300?text=No+Image',
-    }));
+    // Filter for verified/popular artists
+    const filteredResults = response.data.items
+      .filter((item: any) => {
+        const title = item.snippet.title.toLowerCase();
+        return (
+          title.includes('official') || // Check for "Official" in the title
+          title.includes('music') ||    // Check for "Music" in the title
+          title.includes(query.toLowerCase()) // Match the query
+        );
+      })
+      .slice(0, maxResults) // Limit to the desired number of results
+      .map((item: any) => ({
+        id: item.id.channelId,
+        name: item.snippet.title,
+        image: item.snippet.thumbnails.high?.url || 'https://via.placeholder.com/300x300?text=No+Image',
+        description: item.snippet.description || 'No description available.',
+      }));
 
-    setToCache(cacheKey, results);
-    return results;
+    setToCache(cacheKey, filteredResults);
+    return filteredResults;
   } catch (error) {
     console.error('Error searching channels:', error);
-    throw new Error('Failed to fetch channels. Please try again later.');
+    return [];
   }
 };
 
