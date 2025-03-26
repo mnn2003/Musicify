@@ -90,38 +90,43 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Popular Artists Section */}
-      <section className="mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Artists</h2>
-        <div
-          className="flex gap-4 overflow-x-auto hide-scrollbar"
-          style={{ scrollBehavior: 'smooth' }} // Smooth scrolling for better UX
-        >
-          {popularArtists.map(artist => (
-            <Link
-              key={artist.id}
-              to={`/artist/${artist.id}`}
-              aria-label={`View ${artist.name}'s profile`}
-              className="group relative flex-shrink-0 w-32 sm:w-40 aspect-square rounded-lg transition-transform hover:scale-105 shadow-md"
-            >
-              {/* Artist Image */}
-              <img
-                src={artist.image}
-                alt={`${artist.name} profile`}
-                className="w-full h-full object-cover rounded-lg"
-                loading="lazy"
-              />
-      
-              {/* Overlay with Artist Name */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
-                {/* Ensure the text color is always white */}
-                <span className="text-white text-sm sm:text-base font-bold dark:text-white">
+        <section className="mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Artists</h2>
+          <div
+            className="flex gap-4 overflow-x-auto hide-scrollbar"
+            style={{ scrollBehavior: 'smooth' }} // Smooth scrolling for better UX
+          >
+            {popularArtists.map(artist => (
+              <div
+                key={artist.id}
+                className="group flex-shrink-0 w-32 sm:w-40 text-center transition-transform hover:scale-105"
+              >
+                {/* Artist Image */}
+                <Link
+                  to={`/artist/${artist.id}`}
+                  aria-label={`View ${artist.name}'s profile`}
+                  className="block rounded-lg overflow-hidden shadow-md"
+                >
+                  <img
+                    src={artist.image}
+                    alt={`${artist.name} profile`}
+                    className="w-full h-32 sm:h-40 object-cover rounded-lg"
+                    loading="lazy"
+                  />
+                </Link>
+        
+                {/* Artist Name Below the Image */}
+                <Link
+                  to={`/artist/${artist.id}`}
+                  aria-label={`View ${artist.name}'s profile`}
+                  className="block mt-2 text-sm sm:text-base font-bold text-white dark:text-white hover:underline"
+                >
                   {artist.name}
-                </span>
+                </Link>
               </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
       
       {/* Trending Bollywood Section */}
       <section className="mb-8">
