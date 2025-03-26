@@ -28,6 +28,16 @@ const ArtistPage: React.FC = () => {
         image: 'https://artistbookingcompany.com/wp-content/uploads/2024/03/atif-aslam-680x680.jpg',
         description: "A renowned Pakistani singer whose voice has captured hearts across borders."
       },
+      'shreya-ghoshal': {
+        name: 'Shreya Ghoshal',
+        image: 'https://shreyaghoshal.com/assest/images/shreya-image.png',
+        description: "A classically trained singer known for her melodious and soulful Bollywood songs."
+      },
+      'jubin-nautiyal': {
+        name: 'Jubin Nautiyal',
+        image: 'https://d3lzcn6mbbadaf.cloudfront.net/media/details/ANI-20230613151101.jpg',
+        description: "A rising playback singer known for his smooth voice and hit Bollywood songs."
+      },
       'a-r-rahman': {
         name: 'A. R. Rahman',
         image: 'https://bsmedia.business-standard.com/_media/bs/img/article/2024-10/10/full/1728535850-9674.jpg',
