@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  getPopularMusicVideos,
-  searchVideos,
-  searchChannels,
-} from '../api/youtube';
+import { getPopularMusicVideos, searchVideos, searchChannels, getVideoDetails } from '../api/youtube';
 import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
 import SkeletonLoader from '../components/SkeletonLoader';
