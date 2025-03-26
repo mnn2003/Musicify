@@ -41,6 +41,10 @@ export const searchVideos = async (query: string, maxResults = 20): Promise<Sear
       }
     });
 
+    if (!response.data.items?.length) {
+      throw new Error('No results found');
+    }
+
     const results = response.data.items.map((item: any) => ({
       id: item.id.videoId,
       title: item.snippet.title,
