@@ -28,15 +28,40 @@ const ArtistPage: React.FC = () => {
         image: 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?w=800&q=80',
         description: 'A renowned Pakistani singer whose voice has captured hearts across borders.'
       },
-      'shreya-ghoshal': {
-        name: 'Shreya Ghoshal',
-        image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800&q=80',
-        description: 'A classically trained vocalist known for her pure and melodious voice.'
+      'a-r-rahman': {
+        name: 'A. R. Rahman',
+        image: 'https://images.unsplash.com/photo-1520289146752-a94979ca143e?w=800&q=80',
+        description: 'An Academy Award-winning composer known for blending classical Indian music with electronic sounds.'
       },
-      'jubin-nautiyal': {
-        name: 'Jubin Nautiyal',
-        image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80',
-        description: 'A rising star in the Indian music industry with a unique voice and style.'
+      'kumar-sanu': {
+        name: 'Kumar Sanu',
+        image: 'https://images.unsplash.com/photo-1580136579312-94651c9f61b8?w=800&q=80',
+        description: 'The voice of the 90s Bollywood era, known for his melodious and romantic songs.'
+      },
+      'sonu-nigam': {
+        name: 'Sonu Nigam',
+        image: 'https://images.unsplash.com/photo-1615937659915-06ce99f9b730?w=800&q=80',
+        description: 'One of India\'s most versatile playback singers with a career spanning decades.'
+      },
+      'darshan-raval': {
+        name: 'Darshan Raval',
+        image: 'https://images.unsplash.com/photo-1604563164051-43fc8f236e4d?w=800&q=80',
+        description: 'A popular singer-songwriter known for his soulful and romantic songs.'
+      },
+      'armaan-malik': {
+        name: 'Armaan Malik',
+        image: 'https://images.unsplash.com/photo-1620145594807-67a6bfb85716?w=800&q=80',
+        description: 'A young sensation in Indian music, delivering pop and Bollywood hits.'
+      },
+      'shankar-mahadevan': {
+        name: 'Shankar Mahadevan',
+        image: 'https://images.unsplash.com/photo-1518457997722-76f27fbf9b91?w=800&q=80',
+        description: 'A legendary singer-composer known for his energetic voice and classical roots.'
+      },
+      'krishnakumar-kunnath': {
+        name: 'Krishnakumar Kunnath (KK)',
+        image: 'https://images.unsplash.com/photo-1554449543-3e46d9d19d37?w=800&q=80',
+        description: 'A voice that defined an era, known for his deep emotional connection with music.'
       }
     };
 
