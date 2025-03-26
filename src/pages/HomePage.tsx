@@ -16,23 +16,19 @@ interface Artist {
 }
 
 const popularArtists: Artist[] = [
-  { id: 'arijit-singh', name: 'Arijit Singh', image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&q=80' },
-  { id: 'neha-kakkar', name: 'Neha Kakkar', image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=300&q=80' },
-  { id: 'atif-aslam', name: 'Atif Aslam', image: 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?w=300&q=80' },
-  { id: 'shreya-ghoshal', name: 'Shreya Ghoshal', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&q=80' },
-  { id: 'jubin-nautiyal', name: 'Jubin Nautiyal', image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&q=80' },
-  { id: 'taylor-swift', name: 'Taylor Swift', image: 'https://images.unsplash.com/photo-1606170032711-d2b63eb383c6?w=300&q=80' },
-  { id: 'the-weeknd', name: 'The Weeknd', image: 'https://images.unsplash.com/photo-1598899134739-24c46f58dd31?w=300&q=80' },
-  { id: 'diljit-dosanjh', name: 'Diljit Dosanjh', image: 'https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?w=300&q=80' },
-  { id: 'a-r-rahman', name: 'A. R. Rahman', image: 'https://images.unsplash.com/photo-1520289146752-a94979ca143e?w=300&q=80' },
-  { id: 'kumar-sanu', name: 'Kumar Sanu', image: 'https://images.unsplash.com/photo-1580136579312-94651c9f61b8?w=300&q=80' },
-  { id: 'sonu-nigam', name: 'Sonu Nigam', image: 'https://images.unsplash.com/photo-1615937659915-06ce99f9b730?w=300&q=80' },
-  { id: 'darshan-raval', name: 'Darshan Raval', image: 'https://images.unsplash.com/photo-1604563164051-43fc8f236e4d?w=300&q=80' },
-  { id: 'armaan-malik', name: 'Armaan Malik', image: 'https://images.unsplash.com/photo-1620145594807-67a6bfb85716?w=300&q=80' },
-  { id: 'shankar-mahadevan', name: 'Shankar Mahadevan', image: 'https://images.unsplash.com/photo-1518457997722-76f27fbf9b91?w=300&q=80' },
-  { id: 'krishnakumar-kunnath', name: 'Krishnakumar Kunnath (KK)', image: 'https://images.unsplash.com/photo-1554449543-3e46d9d19d37?w=300&q=80' }
+  { id: 'arijit-singh', name: 'Arijit Singh', image: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Arijit_Singh_%28cropped%29.jpg' },
+  { id: 'neha-kakkar', name: 'Neha Kakkar', image: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Neha_Kakkar_at_Lakme_Fashion_Week_2020_%28cropped%29.jpg' },
+  { id: 'atif-aslam', name: 'Atif Aslam', image: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Atif_Aslam_%282019%29.jpg' },
+  { id: 'shreya-ghoshal', name: 'Shreya Ghoshal', image: 'https://upload.wikimedia.org/wikipedia/commons/6/60/Shreya_Ghoshal_at_Mirchi_Music_Awards_2020_%28cropped%29.jpg' },
+  { id: 'jubin-nautiyal', name: 'Jubin Nautiyal', image: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Jubin_Nautiyal_at_Mirchi_Music_Awards_2020.jpg' },
+  { id: 'a-r-rahman', name: 'A. R. Rahman', image: 'https://upload.wikimedia.org/wikipedia/commons/0/09/A_R_Rahman_2019.jpg' },
+  { id: 'kumar-sanu', name: 'Kumar Sanu', image: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Kumar_Sanu_%28cropped%29.jpg' },
+  { id: 'sonu-nigam', name: 'Sonu Nigam', image: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Sonu_Nigam_at_RBN_Concert.jpg' },
+  { id: 'darshan-raval', name: 'Darshan Raval', image: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Darshan_Raval_at_a_concert_in_2019_%28cropped%29.jpg' },
+  { id: 'armaan-malik', name: 'Armaan Malik', image: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Armaan_Malik_at_Femina_Beauty_Awards_%28cropped%29.jpg' },
+  { id: 'shankar-mahadevan', name: 'Shankar Mahadevan', image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Shankar_Mahadevan.jpg' },
+  { id: 'krishnakumar-kunnath', name: 'Krishnakumar Kunnath (KK)', image: 'https://upload.wikimedia.org/wikipedia/commons/d/dc/KK_Indian_singer.jpg' }
 ];
-
 
 const HomePage: React.FC = () => {
   const [popularTracks, setPopularTracks] = useState<Track[]>([]);
