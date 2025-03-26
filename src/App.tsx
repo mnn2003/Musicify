@@ -36,11 +36,18 @@ function App() {
   }, [isAuthenticated, fetchUserData]);
 
   useEffect(() => {
-    if (theme) {
-      document.documentElement.classList.remove('light', 'dark');
-      document.documentElement.classList.add(theme);
-    }
-  }, [theme]);
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      if (themeMode === 'system') {
+        const prefersDarkScheme = mediaQuery.matches;
+        document.documentElement.classList.remove('light', 'dark');
+        document.documentElement.classList.add(prefersDarkScheme ? 'dark' : 'light');
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [themeMode]);
 
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (isAuthLoading || isUserDataLoading) {
