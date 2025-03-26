@@ -16,18 +16,17 @@ interface Artist {
 }
 
 const popularArtists: Artist[] = [
-  { id: 'arijit-singh', name: 'Arijit Singh', image: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Arijit_Singh_%28cropped%29.jpg' },
-  { id: 'neha-kakkar', name: 'Neha Kakkar', image: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Neha_Kakkar_at_Lakme_Fashion_Week_2020_%28cropped%29.jpg' },
-  { id: 'atif-aslam', name: 'Atif Aslam', image: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Atif_Aslam_%282019%29.jpg' },
-  { id: 'shreya-ghoshal', name: 'Shreya Ghoshal', image: 'https://upload.wikimedia.org/wikipedia/commons/6/60/Shreya_Ghoshal_at_Mirchi_Music_Awards_2020_%28cropped%29.jpg' },
-  { id: 'jubin-nautiyal', name: 'Jubin Nautiyal', image: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Jubin_Nautiyal_at_Mirchi_Music_Awards_2020.jpg' },
-  { id: 'a-r-rahman', name: 'A. R. Rahman', image: 'https://upload.wikimedia.org/wikipedia/commons/0/09/A_R_Rahman_2019.jpg' },
-  { id: 'kumar-sanu', name: 'Kumar Sanu', image: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Kumar_Sanu_%28cropped%29.jpg' },
-  { id: 'sonu-nigam', name: 'Sonu Nigam', image: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Sonu_Nigam_at_RBN_Concert.jpg' },
-  { id: 'darshan-raval', name: 'Darshan Raval', image: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Darshan_Raval_at_a_concert_in_2019_%28cropped%29.jpg' },
-  { id: 'armaan-malik', name: 'Armaan Malik', image: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Armaan_Malik_at_Femina_Beauty_Awards_%28cropped%29.jpg' },
-  { id: 'shankar-mahadevan', name: 'Shankar Mahadevan', image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Shankar_Mahadevan.jpg' },
-  { id: 'krishnakumar-kunnath', name: 'Krishnakumar Kunnath (KK)', image: 'https://upload.wikimedia.org/wikipedia/commons/d/dc/KK_Indian_singer.jpg' }
+  { id: 'arijit-singh', name: 'Arijit Singh', image: 'https://staticimg.amarujala.com/assets/images/2018/02/17/arijit-singh_1518864927.jpeg' },
+  { id: 'atif-aslam', name: 'Atif Aslam', image: 'https://artistbookingcompany.com/wp-content/uploads/2024/03/atif-aslam-680x680.jpg' },
+  { id: 'shreya-ghoshal', name: 'Shreya Ghoshal', image: 'https://shreyaghoshal.com/assest/images/shreya-image.png' },
+  { id: 'jubin-nautiyal', name: 'Jubin Nautiyal', image: 'https://d3lzcn6mbbadaf.cloudfront.net/media/details/ANI-20230613151101.jpg' },
+  { id: 'a-r-rahman', name: 'A. R. Rahman', image: 'https://bsmedia.business-standard.com/_media/bs/img/article/2024-10/10/full/1728535850-9674.jpg' },
+  { id: 'kumar-sanu', name: 'Kumar Sanu', image: 'https://images.bhaskarassets.com/web2images/521/2021/09/23/kumar_1632382608.jpg' },
+  { id: 'sonu-nigam', name: 'Sonu Nigam', image: 'https://img.etimg.com/thumb/msid-99440296,width-900,height-620,imgsize-33580,resizemode-75/sonu-nigam-crew-allegedly-manhandled-at-chembur-concert-police-looking-at-local-mla-sons-involvement.jpg' },
+  { id: 'darshan-raval', name: 'Darshan Raval', image: 'https://blackhattalent.com/wp-content/uploads/2023/08/Darshan-Raval5.jpg' },
+  { id: 'armaan-malik', name: 'Armaan Malik', image: 'https://www.koimoi.com/wp-content/new-galleries/2022/01/armaan-malik-i-look-for-longevity-of-my-songs-not-instant-gratification-001.jpg' },
+  { id: 'shankar-mahadevan', name: 'Shankar Mahadevan', image: 'https://resize.indiatvnews.com/en/resize/oldbucket/1200_-/entertainmentbollywood/IndiaTv675c46_shankar.jpg' },
+  { id: 'krishnakumar-kunnath', name: 'Krishnakumar Kunnath (KK)', image: 'https://images.mid-day.com/images/images/2024/oct/Krishnakumar-Kunnath_d_d.jpg' }
 ];
 
 const HomePage: React.FC = () => {
