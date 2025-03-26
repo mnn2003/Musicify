@@ -15,56 +15,55 @@ const ArtistPage: React.FC = () => {
     const artists: Record<string, { name: string, image: string, description: string }> = {
       'arijit-singh': {
         name: 'Arijit Singh',
-        image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Arijit_Singh_%28cropped%29.jpg',
         description: 'One of India\'s most versatile singers, known for his soulful voice and emotional depth.'
       },
       'neha-kakkar': {
         name: 'Neha Kakkar',
-        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Neha_Kakkar_at_Lakme_Fashion_Week_2020_%28cropped%29.jpg',
         description: 'A vibrant performer who has risen to become one of Bollywood\'s leading female playback singers.'
       },
       'atif-aslam': {
         name: 'Atif Aslam',
-        image: 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Atif_Aslam_%282019%29.jpg',
         description: 'A renowned Pakistani singer whose voice has captured hearts across borders.'
       },
       'a-r-rahman': {
         name: 'A. R. Rahman',
-        image: 'https://images.unsplash.com/photo-1520289146752-a94979ca143e?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/0/09/A_R_Rahman_2019.jpg',
         description: 'An Academy Award-winning composer known for blending classical Indian music with electronic sounds.'
       },
       'kumar-sanu': {
         name: 'Kumar Sanu',
-        image: 'https://images.unsplash.com/photo-1580136579312-94651c9f61b8?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Kumar_Sanu_%28cropped%29.jpg',
         description: 'The voice of the 90s Bollywood era, known for his melodious and romantic songs.'
       },
       'sonu-nigam': {
         name: 'Sonu Nigam',
-        image: 'https://images.unsplash.com/photo-1615937659915-06ce99f9b730?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Sonu_Nigam_at_RBN_Concert.jpg',
         description: 'One of India\'s most versatile playback singers with a career spanning decades.'
       },
       'darshan-raval': {
         name: 'Darshan Raval',
-        image: 'https://images.unsplash.com/photo-1604563164051-43fc8f236e4d?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Darshan_Raval_at_a_concert_in_2019_%28cropped%29.jpg',
         description: 'A popular singer-songwriter known for his soulful and romantic songs.'
       },
       'armaan-malik': {
         name: 'Armaan Malik',
-        image: 'https://images.unsplash.com/photo-1620145594807-67a6bfb85716?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Armaan_Malik_at_Femina_Beauty_Awards_%28cropped%29.jpg',
         description: 'A young sensation in Indian music, delivering pop and Bollywood hits.'
       },
       'shankar-mahadevan': {
         name: 'Shankar Mahadevan',
-        image: 'https://images.unsplash.com/photo-1518457997722-76f27fbf9b91?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Shankar_Mahadevan.jpg',
         description: 'A legendary singer-composer known for his energetic voice and classical roots.'
       },
       'krishnakumar-kunnath': {
         name: 'Krishnakumar Kunnath (KK)',
-        image: 'https://images.unsplash.com/photo-1554449543-3e46d9d19d37?w=800&q=80',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/d/dc/KK_Indian_singer.jpg',
         description: 'A voice that defined an era, known for his deep emotional connection with music.'
       }
     };
-
     return artists[artistId] || null;
   };
 
