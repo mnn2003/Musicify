@@ -92,13 +92,16 @@ const HomePage: React.FC = () => {
       {/* Popular Artists Section */}
       <section className="mb-8">
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Artists</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div
+          className="flex gap-4 overflow-x-auto hide-scrollbar"
+          style={{ scrollBehavior: 'smooth' }} // Smooth scrolling for better UX
+        >
           {popularArtists.map(artist => (
             <Link
               key={artist.id}
               to={`/artist/${artist.id}`}
               aria-label={`View ${artist.name}'s profile`}
-              className="group relative overflow-hidden aspect-square rounded-lg transition-transform hover:scale-105 shadow-md"
+              className="group relative flex-shrink-0 w-32 sm:w-40 aspect-square rounded-lg transition-transform hover:scale-105 shadow-md"
             >
               {/* Artist Image */}
               <img
@@ -109,14 +112,14 @@ const HomePage: React.FC = () => {
               />
       
               {/* Overlay with Artist Name */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                <span className="text-white text-lg font-bold">{artist.name}</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
+                <span className="text-white text-sm sm:text-base font-bold">{artist.name}</span>
               </div>
             </Link>
           ))}
         </div>
       </section>
-
+      
       {/* Trending Bollywood Section */}
       <section className="mb-8">
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Trending Bollywood</h2>
