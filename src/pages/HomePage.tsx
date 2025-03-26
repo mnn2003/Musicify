@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getPopularMusicVideos, searchVideos, searchChannels } from '../api/youtube';
+import {
+  getPopularMusicVideos,
+  searchVideos,
+  searchChannels,
+} from '../api/youtube';
 import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
-import CategoryCard from '../components/CategoryCard';
-import { useAuthStore } from '../store/authStore';
-import { localTracks, convertToTrack } from '../lib/localMusic';
 import SkeletonLoader from '../components/SkeletonLoader';
 import TrackList from '../components/TrackList';
 
@@ -21,17 +22,6 @@ const HomePage: React.FC = () => {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuthStore();
-  const localMusic = localTracks.map(convertToTrack);
-
-  const categories = [
-    { id: 'pop', name: 'Pop', color: '#1DB954', image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&q=80' },
-    { id: 'rock', name: 'Rock', color: '#E91E63', image: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=200&q=80' },
-    { id: 'hiphop', name: 'Hip Hop', color: '#FF9800', image: 'https://images.unsplash.com/photo-1547355253-ff0740f6e8c1?w=200&q=80' },
-    { id: 'electronic', name: 'Electronic', color: '#9C27B0', image: 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=200&q=80' },
-    { id: 'jazz', name: 'Jazz', color: '#3F51B5', image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=200&q=80' },
-    { id: 'classical', name: 'Classical', color: '#795548', image: 'https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=200&q=80' },
-  ];
 
   useEffect(() => {
     const fetchMusicAndArtists = async () => {
@@ -41,31 +31,35 @@ const HomePage: React.FC = () => {
       try {
         // Fetch popular tracks
         const popularResults = await getPopularMusicVideos(10);
-        const popularTrackPromises = popularResults.map(result => getVideoDetails(result.videoId));
+        const popularTrackPromises = popularResults.map((result) =>
+          getVideoDetails(result.videoId)
+        );
         const popularTracksData = await Promise.all(popularTrackPromises);
         setPopularTracks(popularTracksData);
 
         // Fetch trending Bollywood songs
         const bollywoodResults = await searchVideos('latest bollywood songs 2024', 10);
-        const bollywoodTrackPromises = bollywoodResults.map(result => getVideoDetails(result.videoId));
+        const bollywoodTrackPromises = bollywoodResults.map((result) =>
+          getVideoDetails(result.videoId)
+        );
         const bollywoodTracksData = await Promise.all(bollywoodTrackPromises);
         setTrendingBollywood(bollywoodTracksData);
 
         // Fetch popular artists
         const artistKeywords = ['music artist', 'singer', 'bollywood singer'];
         const artistResults = await Promise.all(
-          artistKeywords.map(keyword => searchChannels(keyword, 5)) // Fetch 5 artists per keyword
+          artistKeywords.map((keyword) => searchChannels(keyword, 5))
         );
 
-        const fetchedArtists = artistResults.flat().map(channel => ({
+        const fetchedArtists = artistResults.flat().map((channel) => ({
           id: channel.id,
           name: channel.name,
           image: channel.image || 'https://via.placeholder.com/300x300?text=No+Image',
         }));
 
         setArtists(fetchedArtists);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } catch (err) {
+        console.error('Error fetching data:', err);
         setError('Failed to load data. Please try again later.');
       } finally {
         setIsLoading(false);
@@ -87,7 +81,7 @@ const HomePage: React.FC = () => {
       {/* Greeting Section */}
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-          Good {getTimeOfDay()}, {user?.name || 'Guest'}
+          Good {getTimeOfDay()}, Guest
         </h1>
         <p className="text-gray-400 text-sm sm:text-base">
           Discover new music and enjoy your favorites
@@ -109,7 +103,7 @@ const HomePage: React.FC = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {artists.map(artist => (
+            {artists.map((artist) => (
               <Link
                 key={artist.id}
                 to={`/artist/${artist.id}`}
@@ -146,15 +140,23 @@ const HomePage: React.FC = () => {
               <SkeletonLoader key={index} />
             ))}
           </div>
+        ) : error ? (
+          <div className="bg-red-900/20 border border-red-900 text-red-200 p-4 rounded-md">
+            {error}
+          </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {trendingBollywood.map(track => (
-              <TrackCard
-                key={track.id}
-                track={track}
-                tracks={trendingBollywood}
-              />
-            ))}
+            {trendingBollywood.length > 0 ? (
+              trendingBollywood.map((track) => (
+                <TrackCard
+                  key={track.id}
+                  track={track}
+                  tracks={trendingBollywood}
+                />
+              ))
+            ) : (
+              <p className="text-gray-400">No trending Bollywood songs found.</p>
+            )}
           </div>
         )}
       </section>
@@ -168,45 +170,25 @@ const HomePage: React.FC = () => {
               <SkeletonLoader key={index} />
             ))}
           </div>
+        ) : error ? (
+          <div className="bg-red-900/20 border border-red-900 text-red-200 p-4 rounded-md">
+            {error}
+          </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {popularTracks.map(track => (
-              <TrackCard
-                key={track.id}
-                track={track}
-                tracks={popularTracks}
-              />
-            ))}
+            {popularTracks.length > 0 ? (
+              popularTracks.map((track) => (
+                <TrackCard
+                  key={track.id}
+                  track={track}
+                  tracks={popularTracks}
+                />
+              ))
+            ) : (
+              <p className="text-gray-400">No popular tracks found.</p>
+            )}
           </div>
         )}
-      </section>
-
-      {/* Local Music Section */}
-      <section className="mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Local Music</h2>
-        <div className="bg-gray-900/50 rounded-lg overflow-hidden">
-          <TrackList
-            tracks={localMusic}
-            showHeader={true}
-            showArtist={true}
-          />
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="mb-8">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Browse Categories</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {categories.map(category => (
-            <CategoryCard
-              key={category.id}
-              id={category.id}
-              name={category.name}
-              color={category.color}
-              image={category.image}
-            />
-          ))}
-        </div>
       </section>
     </div>
   );
