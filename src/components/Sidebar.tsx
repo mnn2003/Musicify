@@ -111,10 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <Settings size={20} />
                 <span>Settings</span>
               </Link>
-            </div>
-
-            {/* Playlist Links */}
-            <div className="space-y-2">
+               {/* Playlist Links */}
               <Link
                 to="/liked-songs"
                 className={`flex items-center gap-3 px-4 py-2 rounded-md transition-colors ${
@@ -145,6 +142,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <span>Create Playlist</span>
               </button>
             </div>
+            
           </nav>
         </div>
 
