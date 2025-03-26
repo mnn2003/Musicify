@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { getPopularMusicVideos, getVideoDetails, searchVideos } from '../api/youtube';
+import { Link } from 'react-router-dom';
+import { getPopularMusicVideos, searchVideos, searchChannels } from '../api/youtube';
 import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
 import CategoryCard from '../components/CategoryCard';
 import { useAuthStore } from '../store/authStore';
 import { localTracks, convertToTrack } from '../lib/localMusic';
 import SkeletonLoader from '../components/SkeletonLoader';
-import { Link } from 'react-router-dom';
 import TrackList from '../components/TrackList';
 
 interface Artist {
@@ -15,38 +15,12 @@ interface Artist {
   image: string;
 }
 
-const popularArtists: Artist[] = [
-  {
-    id: 'arijit-singh',
-    name: 'Arijit Singh',
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&q=80'
-  },
-  {
-    id: 'neha-kakkar',
-    name: 'Neha Kakkar',
-    image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=300&q=80'
-  },
-  {
-    id: 'atif-aslam',
-    name: 'Atif Aslam',
-    image: 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?w=300&q=80'
-  },
-  {
-    id: 'shreya-ghoshal',
-    name: 'Shreya Ghoshal',
-    image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&q=80'
-  },
-  {
-    id: 'jubin-nautiyal',
-    name: 'Jubin Nautiyal',
-    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&q=80'
-  }
-];
-
 const HomePage: React.FC = () => {
   const [popularTracks, setPopularTracks] = useState<Track[]>([]);
   const [trendingBollywood, setTrendingBollywood] = useState<Track[]>([]);
+  const [artists, setArtists] = useState<Artist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useAuthStore();
   const localMusic = localTracks.map(convertToTrack);
 
@@ -60,28 +34,45 @@ const HomePage: React.FC = () => {
   ];
 
   useEffect(() => {
-    const fetchMusic = async () => {
+    const fetchMusicAndArtists = async () => {
       setIsLoading(true);
+      setError(null);
+
       try {
         // Fetch popular tracks
-        const results = await getPopularMusicVideos(10);
-        const trackPromises = results.map(result => getVideoDetails(result.videoId));
-        const tracks = await Promise.all(trackPromises);
-        setPopularTracks(tracks);
+        const popularResults = await getPopularMusicVideos(10);
+        const popularTrackPromises = popularResults.map(result => getVideoDetails(result.videoId));
+        const popularTracksData = await Promise.all(popularTrackPromises);
+        setPopularTracks(popularTracksData);
 
         // Fetch trending Bollywood songs
         const bollywoodResults = await searchVideos('latest bollywood songs 2024', 10);
         const bollywoodTrackPromises = bollywoodResults.map(result => getVideoDetails(result.videoId));
-        const bollywoodTracks = await Promise.all(bollywoodTrackPromises);
-        setTrendingBollywood(bollywoodTracks);
+        const bollywoodTracksData = await Promise.all(bollywoodTrackPromises);
+        setTrendingBollywood(bollywoodTracksData);
+
+        // Fetch popular artists
+        const artistKeywords = ['music artist', 'singer', 'bollywood singer'];
+        const artistResults = await Promise.all(
+          artistKeywords.map(keyword => searchChannels(keyword, 5)) // Fetch 5 artists per keyword
+        );
+
+        const fetchedArtists = artistResults.flat().map(channel => ({
+          id: channel.id,
+          name: channel.name,
+          image: channel.image || 'https://via.placeholder.com/300x300?text=No+Image',
+        }));
+
+        setArtists(fetchedArtists);
       } catch (error) {
-        console.error('Error fetching music:', error);
+        console.error('Error fetching data:', error);
+        setError('Failed to load data. Please try again later.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchMusic();
+    fetchMusicAndArtists();
   }, []);
 
   const getTimeOfDay = () => {
@@ -106,29 +97,44 @@ const HomePage: React.FC = () => {
       {/* Popular Artists Section */}
       <section className="mb-8">
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Artists</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {popularArtists.map(artist => (
-            <Link
-              key={artist.id}
-              to={`/artist/${artist.id}`}
-              aria-label={`View ${artist.name}'s profile`}
-              className="group relative overflow-hidden aspect-square rounded-lg transition-transform hover:scale-105 shadow-md"
-            >
-              {/* Artist Image */}
-              <img
-                src={artist.image}
-                alt={`${artist.name} profile`}
-                className="w-full h-full object-cover rounded-lg"
-                loading="lazy"
-              />
-      
-              {/* Overlay with Artist Name */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                <span className="text-white text-lg font-bold">{artist.name}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <SkeletonLoader key={index} />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="bg-red-900/20 border border-red-900 text-red-200 p-4 rounded-md">
+            {error}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {artists.map(artist => (
+              <Link
+                key={artist.id}
+                to={`/artist/${artist.id}`}
+                aria-label={`View ${artist.name}'s profile`}
+                className="group relative overflow-hidden aspect-square rounded-lg transition-transform hover:scale-105 shadow-md"
+              >
+                {/* Artist Image */}
+                <img
+                  src={artist.image}
+                  alt={`${artist.name} profile`}
+                  className="w-full h-full object-cover rounded-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/300x300?text=No+Image';
+                  }}
+                  loading="lazy"
+                />
+
+                {/* Overlay with Artist Name */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <span className="text-white text-lg font-bold">{artist.name}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Trending Bollywood Section */}
@@ -143,9 +149,9 @@ const HomePage: React.FC = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {trendingBollywood.map(track => (
-              <TrackCard 
-                key={track.id} 
-                track={track} 
+              <TrackCard
+                key={track.id}
+                track={track}
                 tracks={trendingBollywood}
               />
             ))}
@@ -165,8 +171,8 @@ const HomePage: React.FC = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {popularTracks.map(track => (
-              <TrackCard 
-                key={track.id} 
+              <TrackCard
+                key={track.id}
                 track={track}
                 tracks={popularTracks}
               />
@@ -179,7 +185,7 @@ const HomePage: React.FC = () => {
       <section className="mb-8">
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Local Music</h2>
         <div className="bg-gray-900/50 rounded-lg overflow-hidden">
-          <TrackList 
+          <TrackList
             tracks={localMusic}
             showHeader={true}
             showArtist={true}
