@@ -8,7 +8,6 @@ import LoadingSpinner from './components/LoadingSpinner';
 import ErrorBoundary from './components/ErrorBoundary';
 import Toaster from './components/Toaster';
 
-// Lazy-loaded pages
 const HomePage = lazy(() => import('./pages/HomePage'));
 const SearchPage = lazy(() => import('./pages/SearchPage'));
 const PlaylistPage = lazy(() => import('./pages/PlaylistPage'));
@@ -24,61 +23,45 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 function App() {
   const { checkAuth, isAuthenticated, isLoading: isAuthLoading } = useAuthStore();
   const { fetchUserData, isLoading: isUserDataLoading } = usePlaylistStore();
-  const { themeMode } = useThemeStore(); // Use `themeMode` from the store
+  const { theme } = useThemeStore();
 
-  // Check authentication on mount
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  // Fetch user data if authenticated
   useEffect(() => {
     if (isAuthenticated) {
       fetchUserData();
     }
   }, [isAuthenticated, fetchUserData]);
 
-  // Listen for system preference changes
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = () => {
-      if (themeMode === 'system') {
-        const prefersDarkScheme = mediaQuery.matches;
-        document.documentElement.classList.remove('light', 'dark');
-        document.documentElement.classList.add(prefersDarkScheme ? 'dark' : 'light');
-      }
-    };
+    if (theme) {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
+    }
+  }, [theme]);
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [themeMode]);
-
-  // Protected Route wrapper
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     if (isAuthLoading || isUserDataLoading) {
       return <LoadingSpinner />;
     }
-    return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+    return isAuthenticated ? children : <Navigate to="/login" />;
   };
 
   return (
     <HashRouter>
       <ErrorBoundary>
-        {/* Apply the current theme mode */}
-        <div className={themeMode}>
+        <div className={theme}>
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
-              {/* Public Routes */}
               <Route path="/login" element={<LoginPage />} />
 
-              {/* Main Layout Routes */}
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="search" element={<SearchPage />} />
                 <Route path="artist/:id" element={<ArtistPage />} />
                 <Route path="settings" element={<SettingsPage />} />
-
-                {/* Protected Routes */}
                 <Route
                   path="library"
                   element={
@@ -129,11 +112,8 @@ function App() {
                 />
               </Route>
 
-              {/* Fallback Route */}
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
-
-            {/* Global Toaster */}
             <Toaster />
           </Suspense>
         </div>
