@@ -90,65 +90,43 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Popular Artists Section */}
-<section className="mb-8">
-  {/* Section Title */}
-  <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Artists</h2>
-
-  {/* Slider Container */}
-  <div className="relative">
-    {/* Horizontal Scrolling Artists List */}
-    <div
-      className="flex gap-4 overflow-x-auto hide-scrollbar"
-      style={{ scrollBehavior: 'smooth' }} // Smooth scrolling for better UX
-    >
-      {popularArtists.map(artist => (
+      <section className="mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Artists</h2>
         <div
-          key={artist.id}
-          className="group flex-shrink-0 w-32 sm:w-40 text-center transition-transform hover:scale-105"
+          className="flex gap-4 overflow-x-auto hide-scrollbar"
+          style={{ scrollBehavior: 'smooth' }} // Smooth scrolling for better UX
         >
-          {/* Artist Image */}
-          <Link
-            to={`/artist/${artist.id}`}
-            aria-label={`View ${artist.name}'s profile`}
-            className="block rounded-lg overflow-hidden shadow-md"
-          >
-            <img
-              src={artist.image}
-              alt={`${artist.name} profile`}
-              className="w-full h-32 sm:h-40 object-cover rounded-lg"
-              loading="lazy"
-            />
-          </Link>
-
-          {/* Artist Name Below the Image */}
-          <Link
-            to={`/artist/${artist.id}`}
-            aria-label={`View ${artist.name}'s profile`}
-            className="block mt-2 text-sm sm:text-base font-bold text-white dark:text-white hover:underline"
-          >
-            {artist.name}
-          </Link>
+          {popularArtists.map(artist => (
+            <div
+              key={artist.id}
+              className="group flex-shrink-0 w-32 sm:w-40 text-center transition-transform hover:scale-105"
+            >
+              {/* Artist Image */}
+              <Link
+                to={`/artist/${artist.id}`}
+                aria-label={`View ${artist.name}'s profile`}
+                className="block rounded-lg overflow-hidden shadow-md"
+              >
+                <img
+                  src={artist.image}
+                  alt={`${artist.name} profile`}
+                  className="w-full h-32 sm:h-40 object-cover rounded-lg"
+                  loading="lazy"
+                />
+              </Link>
+      
+              {/* Artist Name Below the Image */}
+              <Link
+                to={`/artist/${artist.id}`}
+                aria-label={`View ${artist.name}'s profile`}
+                className="block mt-2 text-sm sm:text-base font-bold text-white dark:text-white hover:underline"
+              >
+                {artist.name}
+              </Link>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-
-    {/* Hide Scrollbar Styling */}
-    <style jsx>{`
-      .hide-scrollbar {
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
-      }
-      .hide-scrollbar::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, and Opera */
-      }
-    `}</style>
-  </div>
-
-  {/* Text Under the Slider */}
-  <p className="mt-4 text-center text-sm text-gray-400">
-    Swipe to explore more artists
-  </p>
-</section>
+      </section>
       
       {/* Trending Bollywood Section */}
       <section className="mb-8">
