@@ -16,32 +16,23 @@ interface Artist {
 }
 
 const popularArtists: Artist[] = [
-  {
-    id: 'arijit-singh',
-    name: 'Arijit Singh',
-    image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&q=80'
-  },
-  {
-    id: 'neha-kakkar',
-    name: 'Neha Kakkar',
-    image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=300&q=80'
-  },
-  {
-    id: 'atif-aslam',
-    name: 'Atif Aslam',
-    image: 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?w=300&q=80'
-  },
-  {
-    id: 'shreya-ghoshal',
-    name: 'Shreya Ghoshal',
-    image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&q=80'
-  },
-  {
-    id: 'jubin-nautiyal',
-    name: 'Jubin Nautiyal',
-    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&q=80'
-  }
+  { id: 'arijit-singh', name: 'Arijit Singh', image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=300&q=80' },
+  { id: 'neha-kakkar', name: 'Neha Kakkar', image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=300&q=80' },
+  { id: 'atif-aslam', name: 'Atif Aslam', image: 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?w=300&q=80' },
+  { id: 'shreya-ghoshal', name: 'Shreya Ghoshal', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=300&q=80' },
+  { id: 'jubin-nautiyal', name: 'Jubin Nautiyal', image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&q=80' },
+  { id: 'taylor-swift', name: 'Taylor Swift', image: 'https://images.unsplash.com/photo-1606170032711-d2b63eb383c6?w=300&q=80' },
+  { id: 'the-weeknd', name: 'The Weeknd', image: 'https://images.unsplash.com/photo-1598899134739-24c46f58dd31?w=300&q=80' },
+  { id: 'diljit-dosanjh', name: 'Diljit Dosanjh', image: 'https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?w=300&q=80' },
+  { id: 'a-r-rahman', name: 'A. R. Rahman', image: 'https://images.unsplash.com/photo-1520289146752-a94979ca143e?w=300&q=80' },
+  { id: 'kumar-sanu', name: 'Kumar Sanu', image: 'https://images.unsplash.com/photo-1580136579312-94651c9f61b8?w=300&q=80' },
+  { id: 'sonu-nigam', name: 'Sonu Nigam', image: 'https://images.unsplash.com/photo-1615937659915-06ce99f9b730?w=300&q=80' },
+  { id: 'darshan-raval', name: 'Darshan Raval', image: 'https://images.unsplash.com/photo-1604563164051-43fc8f236e4d?w=300&q=80' },
+  { id: 'armaan-malik', name: 'Armaan Malik', image: 'https://images.unsplash.com/photo-1620145594807-67a6bfb85716?w=300&q=80' },
+  { id: 'shankar-mahadevan', name: 'Shankar Mahadevan', image: 'https://images.unsplash.com/photo-1518457997722-76f27fbf9b91?w=300&q=80' },
+  { id: 'krishnakumar-kunnath', name: 'Krishnakumar Kunnath (KK)', image: 'https://images.unsplash.com/photo-1554449543-3e46d9d19d37?w=300&q=80' }
 ];
+
 
 const HomePage: React.FC = () => {
   const [popularTracks, setPopularTracks] = useState<Track[]>([]);
