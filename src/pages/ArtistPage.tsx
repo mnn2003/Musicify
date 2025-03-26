@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { searchChannels, searchVideos, getVideoDetails } from '../api/youtube';
+import { searchVideos, getVideoDetails } from '../api/youtube';
 import { Track } from '../types';
 import TrackList from '../components/TrackList';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -8,63 +8,65 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const ArtistPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [artistInfo, setArtistInfo] = useState<{ name: string; image: string; description: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const getArtistInfo = (artistId: string) => {
+    const artists: Record<string, { name: string, image: string, description: string }> = {
+      'arijit-singh': {
+        name: 'Arijit Singh',
+        image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80',
+        description: 'One of India\'s most versatile singers, known for his soulful voice and emotional depth.'
+      },
+      'neha-kakkar': {
+        name: 'Neha Kakkar',
+        image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&q=80',
+        description: 'A vibrant performer who has risen to become one of Bollywood\'s leading female playback singers.'
+      },
+      'atif-aslam': {
+        name: 'Atif Aslam',
+        image: 'https://images.unsplash.com/photo-1549213783-8284d0336c4f?w=800&q=80',
+        description: 'A renowned Pakistani singer whose voice has captured hearts across borders.'
+      },
+      'shreya-ghoshal': {
+        name: 'Shreya Ghoshal',
+        image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800&q=80',
+        description: 'A classically trained vocalist known for her pure and melodious voice.'
+      },
+      'jubin-nautiyal': {
+        name: 'Jubin Nautiyal',
+        image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80',
+        description: 'A rising star in the Indian music industry with a unique voice and style.'
+      }
+    };
+
+    return artists[artistId] || null;
+  };
+
+  const artistInfo = useMemo(() => id ? getArtistInfo(id) : null, [id]);
+
   useEffect(() => {
-    const fetchArtistData = async () => {
+    const fetchArtistTracks = async () => {
+      if (!artistInfo) return;
+
       setIsLoading(true);
       setError(null);
 
       try {
-        // Fetch artist information using their channel ID
-        const artistResults = await searchChannels(id, 1); // Search for the artist by their ID
-        if (!artistResults.length) {
-          throw new Error('Artist not found');
-        }
-
-        const artist = artistResults[0];
-        setArtistInfo({
-          name: artist.name,
-          image: artist.image || 'https://via.placeholder.com/800x400?text=Artist+Image+Unavailable',
-          description: artist.description || 'No description available.',
-        });
-
-        // Fetch tracks for the artist
-        const results = await searchVideos(`${artist.name} top songs`, 20);
-        const trackPromises = results.map((result) => getVideoDetails(result.videoId));
+        const results = await searchVideos(`${artistInfo.name} songs`, 20);
+        const trackPromises = results.map(result => getVideoDetails(result.videoId));
         const tracks = await Promise.all(trackPromises);
-
-        const validTracks = tracks.filter((track) => track !== null);
-        if (validTracks.length === 0) {
-          throw new Error('No tracks found');
-        }
-
-        setTracks(validTracks);
+        setTracks(tracks);
       } catch (error) {
-        console.error('Error fetching artist data:', error);
-        setError('Failed to load artist data. Please try again later.');
+        console.error('Error fetching artist tracks:', error);
+        setError('Failed to load artist\'s songs. Please try again later.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchArtistData();
-  }, [id]);
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
-  if (error) {
-    return (
-      <div className="p-8 text-center">
-        <h1 className="text-2xl text-white mb-4">Error</h1>
-        <p className="text-gray-400">{error}</p>
-      </div>
-    );
-  }
+    fetchArtistTracks();
+  }, [artistInfo]); // Only re-run if artistInfo changes
 
   if (!artistInfo) {
     return (
@@ -79,14 +81,11 @@ const ArtistPage: React.FC = () => {
     <div className="p-8">
       {/* Artist Header */}
       <div className="relative mb-8">
-        <div className="h-64 md:h-96 overflow-hidden rounded-lg">
+        <div className="h-64 md:h-96 overflow-hidden">
           <img
             src={artistInfo.image}
-            alt={`${artistInfo.name} profile`}
+            alt={artistInfo.name}
             className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.src = 'https://via.placeholder.com/800x400?text=Artist+Image+Unavailable';
-            }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black"></div>
         </div>
@@ -97,13 +96,15 @@ const ArtistPage: React.FC = () => {
       </div>
 
       {/* Tracks Section */}
-      {tracks.length > 0 ? (
-        <div className="bg-gray-900/50 rounded-lg overflow-hidden">
-          <TrackList tracks={tracks} />
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <div className="bg-red-900/20 border border-red-900 text-red-200 p-4 rounded-md">
+          {error}
         </div>
       ) : (
-        <div className="bg-gray-900/50 rounded-lg p-4">
-          <p className="text-gray-400">No tracks found for this artist.</p>
+        <div className="bg-gray-900/50 rounded-lg overflow-hidden">
+          <TrackList tracks={tracks} />
         </div>
       )}
     </div>
