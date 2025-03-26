@@ -113,7 +113,10 @@ const HomePage: React.FC = () => {
       
               {/* Overlay with Artist Name */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-2">
-                <span className="text-white text-sm sm:text-base font-bold">{artist.name}</span>
+                {/* Ensure the text color is always white */}
+                <span className="text-white text-sm sm:text-base font-bold dark:text-white">
+                  {artist.name}
+                </span>
               </div>
             </Link>
           ))}
