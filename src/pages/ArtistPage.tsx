@@ -15,53 +15,53 @@ const ArtistPage: React.FC = () => {
     const artists: Record<string, { name: string, image: string, description: string }> = {
       'arijit-singh': {
         name: 'Arijit Singh',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Arijit_Singh_%28cropped%29.jpg',
-        description: 'One of India\'s most versatile singers, known for his soulful voice and emotional depth.'
+        image: 'https://staticimg.amarujala.com/assets/images/2018/02/17/arijit-singh_1518864927.jpeg',
+        description: "One of India's most versatile singers, known for his soulful voice and emotional depth."
       },
       'neha-kakkar': {
         name: 'Neha Kakkar',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Neha_Kakkar_at_Lakme_Fashion_Week_2020_%28cropped%29.jpg',
-        description: 'A vibrant performer who has risen to become one of Bollywood\'s leading female playback singers.'
+        image: 'https://starsunfolded.com/wp-content/uploads/2016/02/Neha-Kakkar.jpg',
+        description: "A vibrant performer who has risen to become one of Bollywood's leading female playback singers."
       },
       'atif-aslam': {
         name: 'Atif Aslam',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Atif_Aslam_%282019%29.jpg',
-        description: 'A renowned Pakistani singer whose voice has captured hearts across borders.'
+        image: 'https://artistbookingcompany.com/wp-content/uploads/2024/03/atif-aslam-680x680.jpg',
+        description: "A renowned Pakistani singer whose voice has captured hearts across borders."
       },
       'a-r-rahman': {
         name: 'A. R. Rahman',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/0/09/A_R_Rahman_2019.jpg',
-        description: 'An Academy Award-winning composer known for blending classical Indian music with electronic sounds.'
+        image: 'https://bsmedia.business-standard.com/_media/bs/img/article/2024-10/10/full/1728535850-9674.jpg',
+        description: "An Academy Award-winning composer known for blending classical Indian music with electronic sounds."
       },
       'kumar-sanu': {
         name: 'Kumar Sanu',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Kumar_Sanu_%28cropped%29.jpg',
-        description: 'The voice of the 90s Bollywood era, known for his melodious and romantic songs.'
+        image: 'https://images.bhaskarassets.com/web2images/521/2021/09/23/kumar_1632382608.jpg',
+        description: "The voice of the 90s Bollywood era, known for his melodious and romantic songs."
       },
       'sonu-nigam': {
         name: 'Sonu Nigam',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Sonu_Nigam_at_RBN_Concert.jpg',
-        description: 'One of India\'s most versatile playback singers with a career spanning decades.'
+        image: 'https://img.etimg.com/thumb/msid-99440296,width-900,height-620,imgsize-33580,resizemode-75/sonu-nigam-crew-allegedly-manhandled-at-chembur-concert-police-looking-at-local-mla-sons-involvement.jpg',
+        description: "One of India's most versatile playback singers with a career spanning decades."
       },
       'darshan-raval': {
         name: 'Darshan Raval',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Darshan_Raval_at_a_concert_in_2019_%28cropped%29.jpg',
-        description: 'A popular singer-songwriter known for his soulful and romantic songs.'
+        image: 'https://blackhattalent.com/wp-content/uploads/2023/08/Darshan-Raval5.jpg',
+        description: "A popular singer-songwriter known for his soulful and romantic songs."
       },
       'armaan-malik': {
         name: 'Armaan Malik',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Armaan_Malik_at_Femina_Beauty_Awards_%28cropped%29.jpg',
-        description: 'A young sensation in Indian music, delivering pop and Bollywood hits.'
+        image: 'https://www.koimoi.com/wp-content/new-galleries/2022/01/armaan-malik-i-look-for-longevity-of-my-songs-not-instant-gratification-001.jpg',
+        description: "A young sensation in Indian music, delivering pop and Bollywood hits."
       },
       'shankar-mahadevan': {
         name: 'Shankar Mahadevan',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Shankar_Mahadevan.jpg',
-        description: 'A legendary singer-composer known for his energetic voice and classical roots.'
+        image: 'https://resize.indiatvnews.com/en/resize/oldbucket/1200_-/entertainmentbollywood/IndiaTv675c46_shankar.jpg',
+        description: "A legendary singer-composer known for his energetic voice and classical roots."
       },
       'krishnakumar-kunnath': {
         name: 'Krishnakumar Kunnath (KK)',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/d/dc/KK_Indian_singer.jpg',
-        description: 'A voice that defined an era, known for his deep emotional connection with music.'
+        image: 'https://images.mid-day.com/images/images/2024/oct/Krishnakumar-Kunnath_d_d.jpg',
+        description: "A voice that defined an era, known for his deep emotional connection with music."
       }
     };
     return artists[artistId] || null;
