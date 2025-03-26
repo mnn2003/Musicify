@@ -145,6 +145,36 @@ export const getVideosByCategory = async (categoryId: string, maxResults = 20): 
   return await searchVideos(query, maxResults);
 };
 
+export const searchChannels = async (query: string, maxResults = 5): Promise<any[]> => {
+  const cacheKey = `channels:${query}:${maxResults}`;
+  const cachedData = getFromCache(cacheKey);
+  if (cachedData) return cachedData;
+
+  try {
+    const response = await axios.get(`${BASE_URL}/search`, {
+      params: {
+        part: 'snippet',
+        maxResults,
+        q: query,
+        type: 'channel',
+        key: API_KEY
+      }
+    });
+
+    const results = response.data.items.map((item: any) => ({
+      id: item.id.channelId,
+      name: item.snippet.title,
+      image: item.snippet.thumbnails.high.url || 'https://via.placeholder.com/300x300?text=No+Image',
+    }));
+
+    setToCache(cacheKey, results);
+    return results;
+  } catch (error) {
+    console.error('Error searching channels:', error);
+    return [];
+  }
+};
+
 // Helper function to parse ISO 8601 duration to seconds
 const parseDuration = (duration: string): number => {
   const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
