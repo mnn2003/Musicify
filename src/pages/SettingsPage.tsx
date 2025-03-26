@@ -1,9 +1,14 @@
-import React from 'react';
-import { Sun, Moon, Laptop } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { Sun, Moon } from 'lucide-react';
 import { useThemeStore } from '../store/themeStore';
 
 const SettingsPage: React.FC = () => {
-  const { themeMode, setThemeMode } = useThemeStore();
+  const { theme, setTheme } = useThemeStore();
+
+  useEffect(() => {
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+  }, [theme]);
 
   return (
     <div className="p-8">
@@ -16,26 +21,10 @@ const SettingsPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <span className="text-white">Theme</span>
             <div className="flex gap-2">
-              {/* System Theme Button */}
               <button
-                onClick={() => setThemeMode('system')}
-                aria-pressed={themeMode === 'system'}
+                onClick={() => setTheme('light')}
                 className={`p-2 rounded-md flex items-center gap-2 transition-all ${
-                  themeMode === 'system'
-                    ? 'bg-green-500 text-black'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                }`}
-              >
-                <Laptop size={18} />
-                <span>System</span>
-              </button>
-
-              {/* Light Theme Button */}
-              <button
-                onClick={() => setThemeMode('light')}
-                aria-pressed={themeMode === 'light'}
-                className={`p-2 rounded-md flex items-center gap-2 transition-all ${
-                  themeMode === 'light'
+                  theme === 'light'
                     ? 'bg-green-500 text-black'
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
@@ -43,13 +32,10 @@ const SettingsPage: React.FC = () => {
                 <Sun size={18} />
                 <span>Light</span>
               </button>
-
-              {/* Dark Theme Button */}
               <button
-                onClick={() => setThemeMode('dark')}
-                aria-pressed={themeMode === 'dark'}
+                onClick={() => setTheme('dark')}
                 className={`p-2 rounded-md flex items-center gap-2 transition-all ${
-                  themeMode === 'dark'
+                  theme === 'dark'
                     ? 'bg-green-500 text-black'
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
