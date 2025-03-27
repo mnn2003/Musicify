@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+name: Vite React TypeScript Build
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [18.x, 20.x]
 
     steps:
     - name: Checkout code
@@ -24,9 +24,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Install dependencies
-      run: |
-        npm install
-        npm install --save-dev webpack-cli
+      run: npm install
 
-    - name: Build
-      run: npx webpack
+    - name: Debug installed dependencies
+      run: npm list --depth=0
+
+    - name: Build project
+      run: npm run build
+
+    - name: Preview build output (optional)
+      run: ls dist
