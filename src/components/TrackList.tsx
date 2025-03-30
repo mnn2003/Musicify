@@ -262,8 +262,8 @@ const TrackList: React.FC<TrackListProps> = ({
                 />
                 <div className="truncate">
                   <div className="font-medium text-white truncate">
-                    {currentMenuTrack.title.length > 19
-                      ? `${currentMenuTrack.title.slice(0, 19)}...`
+                    {currentMenuTrack.title.length > 25
+                      ? `${currentMenuTrack.title.slice(0, 25)}...`
                       : currentMenuTrack.title}
                   </div>
                   <div className="text-sm text-gray-400 truncate">
