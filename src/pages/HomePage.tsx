@@ -4,6 +4,7 @@ import { Track } from '../types';
 import TrackCard from '../components/TrackCard';
 import CategoryCard from '../components/CategoryCard';
 import { useAuthStore } from '../store/authStore';
+import { usePlaylistStore } from '../store/playlistStore';
 import { localTracks, convertToTrack } from '../lib/localMusic';
 import SkeletonLoader from '../components/SkeletonLoader';
 import { Link } from 'react-router-dom';
@@ -34,6 +35,7 @@ const HomePage: React.FC = () => {
   const [trendingBollywood, setTrendingBollywood] = useState<Track[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuthStore();
+  const { recentlyPlayed } = usePlaylistStore();
   const localMusic = localTracks.map(convertToTrack);
 
   const categories = [
@@ -89,19 +91,34 @@ const HomePage: React.FC = () => {
         </p>
       </div>
 
+      {/* Recently Played Section */}
+      {recentlyPlayed.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Recently Played</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {recentlyPlayed.slice(0, 5).map(track => (
+              <TrackCard 
+                key={track.id} 
+                track={track}
+                tracks={recentlyPlayed}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Popular Artists Section */}
       <section className="mb-8">
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Popular Artists</h2>
         <div
           className="flex gap-4 overflow-x-auto hide-scrollbar"
-          style={{ scrollBehavior: 'smooth' }} // Smooth scrolling for better UX
+          style={{ scrollBehavior: 'smooth' }}
         >
           {popularArtists.map(artist => (
             <div
               key={artist.id}
               className="group flex-shrink-0 w-32 sm:w-40 text-center transition-transform hover:scale-105"
             >
-              {/* Artist Image */}
               <Link
                 to={`/artist/${artist.id}`}
                 aria-label={`View ${artist.name}'s profile`}
@@ -115,7 +132,6 @@ const HomePage: React.FC = () => {
                 />
               </Link>
       
-              {/* Artist Name Below the Image */}
               <Link
                 to={`/artist/${artist.id}`}
                 aria-label={`View ${artist.name}'s profile`}
@@ -189,6 +205,7 @@ const HomePage: React.FC = () => {
         <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Browse Categories</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {categories.map(category => (
+            
             <CategoryCard
               key={category.id}
               id={category.id}
