@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, Pause, Clock, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Play, Pause, Clock, MoreHorizontal, Pencil, Trash2, Share2, Globe, Lock } from 'lucide-react';
 import { usePlaylistStore } from '../store/playlistStore';
 import { usePlayerStore } from '../store/playerStore';
 import TrackList from '../components/TrackList';
+import toast from 'react-hot-toast';
 
 const PlaylistPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { playlists, deletePlaylist } = usePlaylistStore();
+  const { playlists, deletePlaylist, togglePlaylistVisibility, removeFromPlaylist } = usePlaylistStore();
   const { currentTrack, isPlaying, togglePlay, setCurrentTrack, addToQueue } = usePlayerStore();
   
   const [showMenu, setShowMenu] = useState(false);
@@ -80,6 +81,60 @@ const PlaylistPage: React.FC = () => {
     }
     setShowMenu(false);
   };
+
+  const handleRemoveTrack = async (trackId: string) => {
+    try {
+      await removeFromPlaylist(playlist.id, trackId);
+      toast.success('Song removed from playlist');
+    } catch (error) {
+      toast.error('Failed to remove song');
+    }
+  };
+
+  const handleToggleVisibility = async () => {
+    try {
+      await togglePlaylistVisibility(playlist.id);
+      toast.success(playlist.isPublic ? 'Playlist is now private' : 'Playlist is now public');
+    } catch (error) {
+      toast.error('Failed to update playlist visibility');
+    }
+    setShowMenu(false);
+  };
+
+  const handleShare = () => {
+    if (!playlist.isPublic) {
+      toast.error('Make the playlist public to share it');
+      return;
+    }
+
+    // Create share URL
+    const shareUrl = `${window.location.origin}/#/playlist/${playlist.id}`;
+    
+    // Try to use the Share API if available
+    if (navigator.share) {
+      navigator.share({
+        title: playlist.name,
+        text: `Check out this playlist: ${playlist.name}`,
+        url: shareUrl
+      }).catch(() => {
+        // Fallback to copying to clipboard
+        copyToClipboard(shareUrl);
+      });
+    } else {
+      // Fallback to copying to clipboard
+      copyToClipboard(shareUrl);
+    }
+    
+    setShowMenu(false);
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast.success('Share link copied to clipboard');
+    }).catch(() => {
+      toast.error('Failed to copy share link');
+    });
+  };
   
   return (
     <div className="p-8">
@@ -89,17 +144,30 @@ const PlaylistPage: React.FC = () => {
             <img 
               src={playlist.thumbnail} 
               alt={playlist.name}
-              className="w-60 h-60 object-cover shadow-lg"
+              className="w-60 h-60 object-cover shadow-lg rounded-lg"
             />
           ) : (
-            <div className="w-60 h-60 bg-gray-800 flex items-center justify-center shadow-lg">
+            <div className="w-60 h-60 bg-gray-800 flex items-center justify-center shadow-lg rounded-lg">
               <span className="text-gray-400 text-6xl">🎵</span>
             </div>
           )}
         </div>
         
         <div className="flex flex-col justify-end">
-          <div className="text-sm text-gray-400 uppercase font-bold">Playlist</div>
+          <div className="flex items-center gap-2">
+            <div className="text-sm text-gray-400 uppercase font-bold">Playlist</div>
+            {playlist.isPublic ? (
+              <div className="flex items-center gap-1 text-green-500 text-sm">
+                <Globe size={14} />
+                <span>Public</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-gray-400 text-sm">
+                <Lock size={14} />
+                <span>Private</span>
+              </div>
+            )}
+          </div>
           
           {isEditing ? (
             <div className="mt-2">
@@ -177,6 +245,20 @@ const PlaylistPage: React.FC = () => {
               </button>
               <button
                 className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 flex items-center gap-2"
+                onClick={handleToggleVisibility}
+              >
+                {playlist.isPublic ? <Lock size={16} /> : <Globe size={16} />}
+                <span>{playlist.isPublic ? 'Make Private' : 'Make Public'}</span>
+              </button>
+              <button
+                className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 flex items-center gap-2"
+                onClick={handleShare}
+              >
+                <Share2 size={16} />
+                <span>Share Playlist</span>
+              </button>
+              <button
+                className="w-full px-4 py-2 text-left text-white hover:bg-gray-700 flex items-center gap-2"
                 onClick={handleDelete}
               >
                 <Trash2 size={16} />
@@ -189,7 +271,10 @@ const PlaylistPage: React.FC = () => {
       
       {playlist.tracks.length > 0 ? (
         <div className="bg-gray-900/50 rounded-lg overflow-hidden">
-          <TrackList tracks={playlist.tracks} />
+          <TrackList 
+            tracks={playlist.tracks} 
+            onTrackRemove={handleRemoveTrack}
+          />
         </div>
       ) : (
         <div className="text-center py-12 text-gray-400">
