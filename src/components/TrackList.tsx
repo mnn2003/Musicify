@@ -1,8 +1,6 @@
-"use client"
-
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Play, Heart, MoreHorizontal, Plus, Check, Clock, ListMusic, X } from "lucide-react"
+import { Play, Heart, MoreHorizontal, Plus, Check, Clock, ListMusic, X, Trash2 } from "lucide-react"
 import type { Track } from "../types"
 import { usePlayerStore } from "../store/playerStore"
 import { usePlaylistStore } from "../store/playlistStore"
@@ -16,6 +14,7 @@ interface TrackListProps {
   showArtist?: boolean
   showAlbum?: boolean
   onTrackClick?: (track: Track) => void
+  onTrackRemove?: (trackId: string) => void
 }
 
 const TrackList: React.FC<TrackListProps> = ({
@@ -24,6 +23,7 @@ const TrackList: React.FC<TrackListProps> = ({
   showArtist = true,
   showAlbum = false,
   onTrackClick,
+  onTrackRemove
 }) => {
   const { setCurrentTrack, currentTrack, isPlaying, togglePlay, addToQueue } = usePlayerStore()
   const { toggleLike, likedSongs, playlists, addToPlaylist } = usePlaylistStore()
@@ -54,7 +54,6 @@ const TrackList: React.FC<TrackListProps> = ({
   // Handle click outside to close modal
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      // Only close if clicking on the overlay (modalRef) but not on the content (modalContentRef)
       if (
         modalRef.current &&
         modalRef.current === event.target &&
@@ -65,7 +64,6 @@ const TrackList: React.FC<TrackListProps> = ({
     }
 
     if (showPlaylistMenu) {
-      // Use mousedown instead of click for better mobile support
       document.addEventListener("mousedown", handleOutsideClick)
     }
 
@@ -101,7 +99,6 @@ const TrackList: React.FC<TrackListProps> = ({
     e.stopPropagation()
     addToQueue(track)
     toast.success("Added to queue")
-    // Only close the menu after the action is complete
     setTimeout(() => setShowPlaylistMenu(null), 500)
   }
 
@@ -118,7 +115,6 @@ const TrackList: React.FC<TrackListProps> = ({
     try {
       await addToPlaylist(playlistId, track)
       toast.success("Added to playlist")
-      // Only close the menu after the action is complete
       setTimeout(() => setShowPlaylistMenu(null), 500)
     } catch (error) {
       toast.error("Failed to add to playlist")
@@ -140,11 +136,19 @@ const TrackList: React.FC<TrackListProps> = ({
     try {
       await toggleLike(track)
       toast.success(isTrackLiked(track) ? "Removed from liked songs" : "Added to liked songs")
-      // Only close the menu after the action is complete
       setTimeout(() => setShowPlaylistMenu(null), 500)
     } catch (error) {
       toast.error("Failed to update liked songs")
     }
+  }
+
+  const handleRemoveClick = async (track: Track, e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (onTrackRemove) {
+      onTrackRemove(track.id)
+    }
+    setShowPlaylistMenu(null)
   }
 
   const handleCloseMenu = (e: React.MouseEvent) => {
@@ -250,7 +254,6 @@ const TrackList: React.FC<TrackListProps> = ({
         <div
           ref={modalRef}
           className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
-          // No onClick handler here - we'll handle clicks in the useEffect
         >
           <div ref={modalContentRef} className="bg-gray-900 rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-gray-800">
@@ -294,6 +297,16 @@ const TrackList: React.FC<TrackListProps> = ({
                 <Heart size={18} fill={isTrackLiked(currentMenuTrack) ? "currentColor" : "none"} />
                 <span>{isTrackLiked(currentMenuTrack) ? "Remove from Liked Songs" : "Add to Liked Songs"}</span>
               </button>
+
+              {onTrackRemove && (
+                <button
+                  className="w-full px-4 py-3 text-left text-red-500 hover:bg-gray-800 rounded-md flex items-center gap-3 transition-colors"
+                  onClick={(e) => handleRemoveClick(currentMenuTrack, e)}
+                >
+                  <Trash2 size={18} />
+                  <span>Remove from Playlist</span>
+                </button>
+              )}
 
               <div className="px-4 py-2 mt-2 text-sm font-medium text-gray-400 border-t border-gray-800">
                 Add to playlist
